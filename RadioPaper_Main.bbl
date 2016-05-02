@@ -1,0 +1,169 @@
+\begin{thebibliography}{10}
+
+\bibitem{item2vec}
+O.~Barkan and N.~Koenigstein.
+\newblock Item2vec: Neural item embedding for collaborative filtering.
+\newblock {\em arXiv preprint arXiv:1603.04259}, 2016.
+
+\bibitem{Bishop}
+C.~M. Bishop.
+\newblock {\em Pattern Recognition and Machine Learning (Information Science
+  and Statistics)}.
+\newblock Springer-Verlag New York, Inc., 2006.
+
+\bibitem{Bogdanov_content}
+D.~Bogdanov, M.~Haro, F.~Fuhrmann, A.~Xamb\'{o}, E.~G\'{o}Mez, and P.~Herrera.
+\newblock Semantic audio content-based music recommendation and visualization
+  based on user preference examples.
+\newblock {\em Inf. Process. Manage.}, 2013.
+
+\bibitem{playlist_survey}
+G.~Bonnin and D.~Jannach.
+\newblock Automated generation of music playlists: Survey and experiments.
+\newblock {\em ACM Comput. Surv.}, 2015.
+
+\bibitem{Hybrid_recsys}
+R.~Burke.
+\newblock Hybrid recommender systems: Survey and experiments.
+\newblock In {\em User Modeling and User-Adapted Interaction}, 2002.
+
+\bibitem{Cai2004}
+L.~Cai and T.~Hofmann.
+\newblock Hierarchical document categorization with support vector machines
+  categories and subject descriptors.
+\newblock In {\em Proceedings of CIKM Conference}, 2004.
+
+\bibitem{DecoroEtAl_2007_BayeAggrForHier}
+C.~Decoro, Z.~Barutcuoglu, and R.~Fiebrink.
+\newblock Bayesian aggregation for hierarchical genre classification.
+\newblock In {\em Proceedings of ISMIR Conference}, 2007.
+
+\bibitem{DoplerEtAl_2008_AcceMusiCollVia}
+M.~Dopler, M.~Schedl, T.~Pohle, and P.~Knees.
+\newblock Accessing music collections via representative cluster prototypes in
+  a hierarchical organization scheme.
+\newblock In {\em Proceedings of ISMIR Conference}, 2008.
+
+\bibitem{Dror2011}
+G.~Dror, N.~Koenigstein, and Y.~Koren.
+\newblock Yahoo ! music recommendations : Modeling music ratings with temporal
+  dynamics and item taxonomy.
+\newblock In {\em Proceedings of RecSys Conference}, 2011.
+
+\bibitem{KDD_Cup11}
+G.~Dror, N.~Koenigstein, Y.~Koren, and M.~Weimer.
+\newblock The {Y}ahoo!~music dataset and {KDD-Cup'11}.
+\newblock In {\em Proceedings of KDD Conference}, 2011.
+
+\bibitem{AUCRef}
+T.~Fawcett.
+\newblock An introduction to roc analysis.
+\newblock {\em Pattern Recognition Letters}, 27:861--874, 2006.
+
+\bibitem{personalized_playlist_schedl}
+B.~Ferwerda and M.~Schedl.
+\newblock Enhancing music recommender systems with personality information and
+  emotional states: {A} proposal.
+\newblock In {\em Proceedings of UMAP Conference}, 2014.
+
+\bibitem{NIPS2012_4609}
+S.~Gopal, Y.~Yang, B.~Bai, and A.~Niculescu-mizil.
+\newblock Bayesian models for large-scale hierarchical classification.
+\newblock In {\em Proceedings of NIPS}, 2012.
+
+\bibitem{LogisticBound}
+T.~S. Jaakkola and M.~I. Jordan.
+\newblock A variational approach to bayesian logistic regression models and
+  their extensions.
+\newblock In {\em Workshop on Artificial Intelligence and Statistics}, 1996.
+
+\bibitem{VB_Methods}
+M.~I. Jordan, Z.~Ghahramani, T.~S. Jaakkola, and L.~K. Saul.
+\newblock An introduction to variational methods for graphical models.
+\newblock {\em Journal of Machine Learning}, 1999.
+
+\bibitem{KorenBV09}
+Y.~Koren, R.~M. Bell, and C.~Volinsky.
+\newblock Matrix factorization techniques for recommender systems.
+\newblock {\em IEEE Computer}, 42(8):30--37, 2009.
+
+\bibitem{Lee2011}
+J.~Lee.
+\newblock How similar is too similar ?: Exploring users ' perceptions of
+  similarity in playlist evaluation.
+\newblock In {\em Proceedings of ISMIR Conference}, 2011.
+
+\bibitem{Maaten2008}
+L.~V.~D. Maaten and G.~Hinton.
+\newblock Visualizing data using t-sne.
+\newblock {\em Journal of Machine Learning Research}, 2008.
+
+\bibitem{MacKay92}
+D.~J. MacKay.
+\newblock The evidence framework applied to classification networks.
+\newblock {\em Neural Computation}, 1992.
+
+\bibitem{Mcfee_learningsimilarity_CF}
+B.~Mcfee, L.~Barrington, and G.~Lanckriet.
+\newblock Learning similarity from collaborative filters.
+\newblock In {\em Proceedings of ISMIR Conference}, 2010.
+
+\bibitem{McfeeEtAl_2009_HeteEmbeForSubj}
+B.~Mcfee and G.~Lanckriet.
+\newblock Heterogeneous embedding for subjective artist similarity.
+\newblock In {\em Proceedings of ISMIR Conference}, 2009.
+
+\bibitem{McFee_multi_similarities}
+B.~McFee and G.~Lanckriet.
+\newblock Learning multi-modal similarity.
+\newblock {\em Journal of Machine Learning}, 2011.
+
+\bibitem{Pampalk2005}
+E.~Pampalk, A.~Flexer, and G.~Widmer.
+\newblock Hierarchical organization and description of music collections at the
+  artist level.
+\newblock In {\em Proceedings of ECDL}, 2005.
+
+\bibitem{xbox-www}
+U.~Paquet and N.~Koenigstein.
+\newblock One-class collaborative filtering with random graphs.
+\newblock In {\em Proceedings of WWW Conference}, 2013.
+
+\bibitem{Pauws:ISMIR02}
+S.~Pauws.
+\newblock Pats: Realization and user evaluation of an automatic playlist
+  generator.
+\newblock In {\em Proceedings of ISMIR Conference}, 2002.
+
+\bibitem{ReynoldsQD00}
+D.~A. Reynolds, T.~F. Quatieri, and R.~B. Dunn.
+\newblock Speaker verification using adapted gaussian mixture models.
+\newblock {\em Digital Signal Processing}, 2000.
+
+\bibitem{www2016}
+O.~Sar-Shalom, N.~Koenigstein, U.~Paquet, and H.~P. Vanchinathan.
+\newblock Beyond collaborative filtering: The list recommendation problem.
+\newblock In {\em Proceedings of WWW Conference}, 2016.
+
+\bibitem{SlaneyEtAl_2008_LearAMetrFor}
+M.~Slaney, K.~Weinberger, and W.~White.
+\newblock Learning a metric for music similarity.
+\newblock In {\em Proceedings of ISMIR Conference}, 2008.
+
+\bibitem{DBLP:conf/recsys/TurrinQCPC15}
+R.~Turrin, M.~Quadrana, A.~Condorelli, R.~Pagano, and P.~Cremonesi.
+\newblock 30music listening and playlists dataset.
+\newblock In {\em Proceedings of RecSys Conference}, 2015.
+
+\bibitem{a2mf}
+A.~van~den Oord, S.~Dieleman, and B.~Schrauwen.
+\newblock Deep content-based music recommendation.
+\newblock In {\em Advances in Neural Information Processing Systems 26 (2013)}.
+  Proceedings of NIPS Conference, 2013.
+
+\bibitem{Zhou2011}
+D.~Zhou and L.~Xiao.
+\newblock Hierarchical classification via orthogonal transfer.
+\newblock In {\em Proceedings of ICML Conference}, 2011.
+
+\end{thebibliography}

@@ -1,0 +1,367 @@
+%!TEX root = RadioPaper_Main.tex
+\label{sec:OurModel}
+As was previously stated, the algorithm in this paper is designed to generate personalized playlists in the context of a ``seed'' artist and a specific listener. In Groove music, a playlist request named ``radio'' can be called by each subscriber using any artist in the catalog as a seed. An artist seed is a common scenario in many alternative online music services, but the algorithm in this paper can be extended to support also track seeds, genre seeds, seeds based on labels as well as various combinations of multi-seeds. In this paper we limit the discussion to the case of a single artist seed.
+
+As explained earlier, constructing a playlist depends on multiple similarities used in estimating the relatedness of a new candidate track to the playlist. These similarities are based on meta-data, usage, acoustic features, and popularity patterns. 
+%Another important feature group contains features based on the popularity of a candidate track. \GL{The above sentences closely resemble the intro} 
+However, the importance of each feature may be different for each seed. To account for difference in the importance of features for different seed artists, we propose a model which incorporates per-artist parameters that capture this variance. In the presence of a listener with historical listening data, the quality of the playlist may be further improved with personalization. Hence, the proposed model includes additional parameters that enable encoding per-user preferences. 
+
+A design goal of the proposed model is to support new or unknown listeners and/or seed artists which are new or ``cold" (i.e. sparsely represented in the training data). If there is insufficient information on the listener, the proposed model performs a graceful fall-back, relying only on parameters related to the seed artist. In the case of an unknown or ``cold" artist, the proposed model relies on the hierarchical domain taxonomy to allow a graceful fall-back using the parameters at the sub-genre level. This property applies also to underrepresented sub-genres and even genres, afforded by relying on correspondingly higher levels in the domain taxonomy. 
+
+
+The algorithm constructs a playlist by iteratively picking the next track to be added to the playlist. 
+At each stage, the algorithm considers candidate tracks to be added to the playlist and predicts their relatedness to the seed, previously selected tracks and the listener. 
+Previously selected tracks, together with seed artist and listener information, constitute the ``context'' from which the model is trained to predict the next track to play. This context is encoded as a feature vector, as described in Section~\ref{sec:Features}.  
+
+%The information that relates the candidate track to seed, the existing tracks and the user is encoded as a feature vector called 
+
+%To facilitate learning transitions in the playlist, the choice of the next track to be played is made using knowledge of the tracks that were previously selected. 
+
+\subsection{Playlists as a Classification Problem}
+\label{sec:playlist_is_classification}
+We denote by $\x_i \in \mathbb{R}^d$ the context feature vector representing the proposition of suggesting a particular track $i$ at a particular ``context'' of previous playlist tracks, a seed artist and the listener. These context feature vectors are mapped to a binary label $r_i \in \{0,1\}$,where $r_i=1$ indicates a positive outcome for the proposition and $r_i=0$ indicates a negative outcome. Thus, we have reduced our problem of playlist selection to a classification problem.
+
+The dataset is denoted by $\mathcal{D}$ and consists of context vectors paired with labeled outcomes, denoted by the tuples $\left(\x_i,r_i\right) \in \mathcal{D}$.
+The binary labels may encode different real-world outcomes  given the context. 
+For example, in a dataset collected from playlist data logs, a track  played to its conclusion may be considered a positive outcome ($r_i=1$), whereas a track  skipped  mid-play may be considered a negative outcome ($r_i=0$). Alternatively, consider a dataset of user-compiled collections. Tracks appearing in a collection may be considered positive outcomes, while some sample of catalog tracks not appearing in the collection are considered negative outcomes.  In Section~\ref{sec:experiments} we provide an evaluation using both of these approaches. 
+
+
+\subsection{The Model}
+In what follows, we describe a  hierarchical Bayesian classification model enriched with additional personalization parameters. We also provide a learning algorithm that generalizes the dataset $\mathcal{D}$ and enables generation of new playlists.
+
+\subsubsection{Notation}
+We discern vectors and matrices from scalars by denoting the former in {\bf bold} letters. We further discern the vectors from the matrices by using lowercase letters for the vectors and capital letters for matrices. For example, $x$ is a scalar, $\x$ is a vector and $\X$ is a matrix. We denote by $\I$ the identity matrix and $\0$ represents a vector of zeros. 
+
+
+The  domain taxonomy is represented as a tree-structured graphical model. Each artist in the catalog corresponds to a leaf-node in the tree, with a single parent node corresponding to the artist's sub-genre. Similarly, each node corresponding to a sub-genre has a single parent node representing the appropriate genre. All nodes corresponding to genres  have a single parent, the root node of the tree. We denote by $\parent(n)$ and $\children(n)$ the mappings from a node indexed by $n$ to its parent and to the set of its children, respectively. We denote by $G$, $S$, $A$ and $U$ the total number of genres, sub-genres, artists and users, respectively. 
+
+We denote by $N$ the size of $\mathcal{D}$, our dataset.
+For the $i$'th tuple in $\mathcal{D}$, we denote by $g_i$, $s_i$, $a_i$ and $u_i$ the specific genre, sub-genre, artist and user (listener) corresponding to this datum, respectively.
+Finally, $\w^{(g)}_{g_i}$, $\w^{(s)}_{s_i}$, $\w^{(a)}_{a_i}$, $\w^{(u)}_{u_i}$,
+$\w \in\mathbb{R}^d$ denote the parameters for genre $g_i$, sub-genre $s_i$, artist $a_i$, user $u_i$, and the root, respectively.
+
+\subsubsection{Likelihood}
+We model the probability of a single example $(\x_i, r_i) \in \mathcal{D}$ given the context vector $\x_i$,
+the artist parameters $\w^{(a)}_{a_i}$ and the user parameters $\w^{(u)}_{u_i}$  as:
+%%
+%% \GL{Not sure equations being so tiny saves so much space, see comparison below, ive added a parameter \\fsize at the top of the doc and set it to 9(instead of 7), the equations look slightly more readable to me}
+% \begin{equation}
+% \begingroup\makeatletter\def\f@size{\fsize}
+% \begin{aligned}
+% p\left( r_i \mid \x_i , \w^{(a)}_{a_i}, \w^{(u)}_{u_i} \right) & = \left[ \sigma \left( \x_i^\top \left( \w^{(a)}_{a_i} + \w^{(u)}_{u_i} \right) \right) \right]^{r_i} \\ 
+% &  \hspace{0mm} \cdot \left[ 1- \sigma \left( \x_i^\top \left( \w^{(a)}_{a_i} + \w^{(u)}_{u_i} \right) \right) \right]^{(1-r_i)},
+% \label{eq:likelihood}
+% \end{aligned}\endgroup
+% \end{equation}
+\begin{align}
+ p( r_i | \x_i , \w^{(a)}_{a_i}, \w^{(u)}_{u_i} )
+& =  \big[ \sigma \big( \x_i^\top ( \w^{(a)}_{a_i} + \w^{(u)}_{u_i} ) \big) \big]^{r_i} \nonumber \\ 
+& \ \:  \cdot \big[ 1 - \sigma \big( \x_i^\top ( \w^{(a)}_{a_i} + \w^{(u)}_{u_i} ) \big) \big]^{(1-r_i)} ,
+\label{eq:likelihood}
+\end{align}
+%%
+where  $\sigma(x) \defined (1 + \mathrm{e}^{-x})^{-1}$ denotes the logistic function.
+The likelihood of the dataset $\mathcal{D}$ is simply the product of these probabilities i.e., $\prod_i p( r_i | \x_i , \w^{(a)}_{a_i}, \w^{(u)}_{u_i})$.
+
+%, under the assumptions that the labels $r_i$ are i.i.d.
+% [NK]  - The i.i.d assumption is obvious. No need to explicitly mention it. A reviewer might question it which may actually be a problem in our case. Better not mention it...
+
+%\todo{One question that people might ask is why the model is additive, e.g.~why the $w$-vectors are added. We could say something like, if we concatenated our features $[\x_i, \x_i]$ and weights $[\w^{(a)}_{a_i}, \w^{(u)}_{u_i}]$, so that the interaction are modelled separately between users and features, and another context and features, then this linear model is exactly what we have above, etc.}
+%\SBE{Another insight to Ulrich's comment that we can say is related to the way we train th model, we alternate between parameters, starting from the hierarchy, thereby learning users as a vector difference from artists, this way artists are sort of a prior when there is no information on users. WDYT?} \GL{I'm not sure  this is the right place to discuss these matters, this being the section were we state the model plainly. Perhaps a small passage at the top of section 3}
+
+\subsubsection{The Prior Distribution}
+The prior distribution over the user parameters is a multivariate Normal:
+$p(\w^{(u)}_{u_i} | \tau_u) = \mathcal{N}(\w^{(u)}_{u_i} ; \0, \tau_u^{-1}\I )$, where $\tau_u$ is a precision parameter.
+The prior distribution over the root, genre, sub-genre, and artist parameters applies the domain taxonomy to define a hierarchy of priors as follows:
+%\begin{equation}
+%\begingroup\makeatletter\def\f@size{\fsize}
+%\begin{aligned}
+%&p\left(\w^{(a)}_{a_i} \mid \w^{(s)}_{s_i}, \tau_a\right) = \mathcal{N}\left(\w^{(a)}_{a_i}; \w^{(s)}_{s_i}, \tau_a^{-1}\I \right), \\
+%&p\left(\w^{(s)}_{s_i} \mid \w^{(g)}_{g_i}, \tau_s\right) = \mathcal{N}\left(\w^{(s)}_{s_i}; \w^{(g)}_{g_i}, \tau_s^{-1}\I \right), \\
+%&p\left(\w^{(g)}_{g_i} \mid \w, \tau_g\right) = \mathcal{N}\left(\w^{(g)}_{g_i}; \w, \tau_g^{-1}\I \right), \\
+%&p\left(\w \mid \tau_w \right) = \mathcal{N}\left(\w; \0, \tau_w^{-1}\I \right),
+%\label{eq:priors}
+%\end{aligned}\endgroup
+%\end{equation}
+\begin{align}
+&p(\w^{(a)}_{a_i} | \w^{(s)}_{s_i}, \tau_a )  = \mathcal{N} (\w^{(a)}_{a_i}; \w^{(s)}_{s_i}, \tau_a^{-1}\I ) \ , \nonumber \\
+&p(\w^{(s)}_{s_i} | \w^{(g)}_{g_i}, \tau_s)   = \mathcal{N} (\w^{(s)}_{s_i}; \w^{(g)}_{g_i}, \tau_s^{-1}\I ) \ , \nonumber \\
+&p(\w^{(g)}_{g_i} | \w, \tau_g )              = \mathcal{N} (\w^{(g)}_{g_i}; \w, \tau_g^{-1}\I )             \ , \nonumber \\
+&p(\w | \tau_w)                               = \mathcal{N} (\w; \0, \tau_w^{-1}\I ) \ ,
+\end{align}
+%%
+where $\tau_a, \tau_s, \tau_g$, $\tau_w$ are scalar precision parameters.
+This prior structure allows sibling artists (belonging to the same sub-genre) to propagate information through the common sub-genre parameters. 
+In case of a ``cold'' artist, it allows borrowing information from siblings by initializing the artist parameters according to the sub-genre parameters (i.e. ``warm'' initialization). As more information on the artist is observed, its parameters can gradually shift away from the prior position to a more accurate representation based on the observed data.
+%to be encoded in relation to their sub-genres, and the sub-genres parameters to be encoded in relation to genres.
+%As an energy function (log joint density), a smaller penalty is paid by encoding two similar artists \emph{once} in their sub-genre;
+These arguments follow along the hierarchical structure and apply to the sub-genre and genre parameters as well.
+% [NK] - We do not have latent representaitons here. This is not matrix factorizaton. All we got is priors on weight paramters that can borrow information from sibling nodes. Also, it is not true that the aritst is only an "extension" of the prior. The entire vector is encoded.
+%\todo{We should tie this to different choices of hierarchy, in the experimental results.}
+%\todo{Can we add an ``embedding visualisation'', a bit like in Noam and my Xbox Movies paper? It helps to bring the point home!}\GL{its not clear what we would see in such a visualization, perhaps clustering of sub-genres around their genre? im not too sure what to expect across genres, as we dont have a classification problem here that incentivizes clear separation of the classes}
+
+We define a set of hyper-priors over the precision parameters given by:
+%\begin{equation}
+%\begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
+%\def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
+%\begin{aligned}
+%&p\left( \tau_u \mid \alpha, \beta \right) = \mathcal{G}\left(\tau_u ; \alpha, \beta \right), 
+%\qquad p\left( \tau_a \mid \alpha, \beta \right) = \mathcal{G}\left(\tau_a ; \alpha, \beta \right), \\
+%&p\left( \tau_s \mid \alpha, \beta \right) = \mathcal{G}\left(\tau_s ; \alpha, \beta \right), 
+%\qquad p\left( \tau_g \mid \alpha, \beta \right) = \mathcal{G}\left(\tau_g ; \alpha, \beta \right), \\
+%& p\left( \tau_w \mid \alpha, \beta \right) = \mathcal{G}\left(\tau_w ; \alpha, \beta \right), 
+%\label{eq:hyper-params}
+%\end{aligned}\endgroup
+%\end{equation} 
+%%
+\begin{align}
+p( \tau_u | \alpha, \beta) & = \mathcal{G}(\tau_u ; \alpha, \beta ) \ , &
+p( \tau_a | \alpha, \beta) & = \mathcal{G}(\tau_a ; \alpha, \beta ) \ , \nonumber \\
+p( \tau_s | \alpha, \beta) & = \mathcal{G}(\tau_s ; \alpha, \beta ) \ , &  
+p( \tau_g | \alpha, \beta) & = \mathcal{G}(\tau_g ; \alpha, \beta ) \ , \nonumber \\
+p( \tau_w | \alpha, \beta) & = \mathcal{G}(\tau_w ; \alpha, \beta ) \ , 
+\label{eq:hyper-params}
+\end{align} 
+%%
+where $\mathcal{G}(\tau ; \alpha, \beta)$ is a Gamma distribution and $\alpha, \beta$ are global shape and rate hyper-parameters, respectively.
+We set $\alpha=\beta=1$, resulting in a Gamma distribution with mean and variance equal to $1$. 
+%This is elaborated in the practical considerations.
+%\SBE{I think we should move this to the practical considerations discussion. WDYT?}
+%\todo{I agree; one has to justify this choice. That gives a prior variance of one on each component of $\w$, and so the prior
+%variance of the inner product is $d$. If we think of a sigmoid function's ``active'' range, this is about as expressive as we
+%might need!}\GL{I dont get ulrich's point about the active rage, but to my view the distinction between this section and the 'practical considerations' is that this section describes stuff we did for the experiments, while the other section describes stuff beyond the experiments for 'production'. So under that logic this fits here (even though we didnt really use hyperpriors)}
+
+\subsubsection{The Joint Probability}
+We collectively denote all the model's parameters by 
+%%
+\begin{align*}
+	\btheta \defined \Big\{
+	& \{ \w_{k_u}^{(u)} \}_{k_u=1}^U, \{ \w_{k_a}^{(a)} \}_{k_a=1}^A, \{ \w_{k_s}^{(s)} \}_{k_s=1}^S, \{ \w_{k_g}^{(g)} \}_{k_g=1}^G,\\
+	& \w, \tau_u, \tau_a, \tau_s, \tau_g, \tau_w \Big\},
+	\label{eq:paramters}
+\end{align*} 
+%%
+and the hyper-parameters by $\mathcal{H}= \{ \alpha , \beta \} $.
+The joint probability of the dataset $\mathcal{D}$ and the parameters $\btheta$ given the hyper-parameters $\mathcal{H}$ is: 
+\begin{equation}
+\begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
+\def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
+\begin{aligned}
+p\left(\mathcal{D}, \btheta \mid \mathcal{H} \right)& = \prod_{i=1}^N p\left( r_i \mid \x_i , \w^{(a)}_{a_i}, \w^{(u)}_{u_i} \right) \cdot \prod_{k_u=1}^Up(\w^{(u)}_{k_u} \mid \tau_u ) \\
+& \cdot \prod_{k_a=1}^Ap(\w^{(a)}_{k_a} \mid \tau_a, \w^{(a)}_{\parent(k_a)} ) 
+\cdot \prod_{k_s=1}^S p(\w^{(s)}_{k_s} \mid \tau_s, \w^{(g)}_{\parent(k_s)} ) \\
+& \cdot \prod_{k_g=1}^G p(\w^{(g)}_{k_g} \mid \tau_g, \w) \cdot p(\w \mid \tau_w ) \cdot \mathcal{G} \left(\tau_u ; \alpha, \beta \right)  \\
+& \cdot \mathcal{G}\left(\tau_a ; \alpha, \beta \right) 
+\cdot \mathcal{G}\left(\tau_s ; \alpha, \beta \right) 
+\cdot \mathcal{G}\left(\tau_g ; \alpha, \beta \right)
+\cdot \mathcal{G}\left(\tau_w ; \alpha, \beta \right).
+\label{eq:joint-likelihood}
+\end{aligned}\endgroup
+\end{equation} 
+The graphical model representing this algorithm is depicted in Figure~\ref{fig:graphical_model}.
+\input{figs/GraphicalModelPlateNotation}
+
+\subsection{Variational Inference}
+We apply variational inference (or variational Bayes) to approximate the posterior distribution,
+$p(\btheta | \mathcal{D}, \mathcal{H} )$,  with some distribution $q(\btheta)$,
+by maximizing the (negative) variational free energy given by
+$
+\mathcal{F} [ q(\btheta) ] \defined \int q(\btheta) \log \frac{p(\mathcal{D}, \btheta | \mathcal{H})}{q(\btheta)} \, \mathrm{d} \btheta
+$.
+$\mathcal{F}$ serves as a lower bound on the log marginal likelihood, or logarithm of the model evidence. 
+
+\subsubsection{Logistic Bound}
+The joint probability in (\ref{eq:joint-likelihood}) includes Gaussian priors which are not conjugate to the likelihood, due to the sigmoid functions appearing in (\ref{eq:likelihood}).
+In order to facilitate approximate inference, these sigmoid functions are bounded by a ``squared exponential'' form, which is conjugate to the Gaussian prior. 
+The following derivations resemble variational inference for logistic regression as described in more detail in \cite{LogisticBound}.
+
+First, the sigmoid functions appearing in (\ref{eq:joint-likelihood}) are lower-bounded using the logistic bound \cite{VB_Methods}.
+Introducing an additional variational parameter $\xi_i$ on each observation $i$ allows the following bound:
+\begin{equation}
+\begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
+\def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
+\begin{aligned}
+& \sigma(h_i)^{r_i} \cdot \left[ 1- \sigma(h_i)\right]^{1-r_i} \geq e^{r_ih_i} \left[ \sigma(\xi_i) e^{-\frac{1}{2}(h_i+\xi_i)-\lambda_i(h_i^2+\xi_i^2)}\right] 
+\label{eq:Jordan-Jakkola}
+\end{aligned}\endgroup
+\end{equation} 
+where $h_i \defined \x_i^\top ( \w^{(a)}_{a_i} + \w^{(u)}_{u_i} )$ and
+$\lambda_i \defined \frac{1}{2 \xi_i} [ \sigma(\xi_i)-\frac{1}{2} ]$.
+Using (\ref{eq:Jordan-Jakkola}), we substitute for the sigmoid functions in $p(\mathcal{D}, \btheta | \mathcal{H})$
+to obtain the lower bound $p_{\xi}(\mathcal{D}, \btheta | \mathcal{H})$.
+We can apply this bound to the variational free energy:
+\[
+\mathcal{F}[ q(\btheta)] \geq \mathcal{F}_{\xi}[ q(\btheta)] \defined  \int q(\btheta) \log \frac{p_{\xi}(\mathcal{D}, \btheta  | \mathcal{H})}{q(\btheta)} \, \mathrm{d} \btheta \ .
+\]
+The analytically tractable $\mathcal{F}_{\xi}[ q(\btheta)]$ is used as our optimization objective with respect to our approximate posterior distribution $q(\btheta)$. 
+
+\subsubsection{Update Equations}
+Variational inference is achieved by restricting the approximation distribution $q(\btheta)$ to
+the family of distributions that factor over the parameters in $\btheta$. With a slight notation overloading for $q$ we have  
+\begin{equation}
+\begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
+\def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
+\begin{aligned}
+q(\btheta)= & \prod_{k_u=1}^U q(\w_{k_u}^{(u)}) \cdot \prod_{k_a=1}^A q(\w_{k_a}^{(a)}) \cdot \prod_{k_s=1}^S q(\w_{k_s}^{(s)}) \cdot \prod_{k_g=1}^G q(\w_{k_g}^{(g)}) \\
+& \cdot q(\w) \cdot q(\tau_u) \cdot q(\tau_a) \cdot q(\tau_s) \cdot q(\tau_g) \cdot q(\tau_w), 
+\label{eq:factorized_q}
+\end{aligned}\endgroup
+\end{equation} 
+where $q$ denotes a different distribution function for each parameter in $\btheta$.
+%Overall we have $U+G+S+A+1$ parameter vectors (the $\w$'s) and $5$ precision parameters (the $\tau$'s).
+
+Optimization of $\mathcal{F}_{\xi}$ follows using coordinate ascent in the function space of the variational distributions. 
+Namely, we compute functional derivatives $\partial\mathcal{F}_{\xi} / \partial q $ with respect to each
+distribution $q$ in (\ref{eq:factorized_q}). 
+Equating the derivatives to zero, together with a Lagrange multiplier constraint to make $q$ integrate
+to 1 (a distribution function), we get the update equations for each $q$ in (\ref{eq:factorized_q}). At each iteration, the optimization process alternates through parameters, applying each update equation in turn. 
+Each such update increases the objective $\mathcal{F}_{\xi}$, thus increasing $\mathcal{F}$. We continue to iterate until convergence.
+Owing to the analytical form of $\mathcal{F}_{\xi}$ and the factorization assumption on the approximation distribution $q$, each component of $q$ turns out to be Gaussian distributed, in the case of the weight parameters, or Gamma distributed, in the case of the precision parameters.
+Thus, in the following we describe the update step of each component of $q$ in terms of its canonical parameters.
+
+
+\paragraph{Update for user parameters}
+\noindent For each user $k_u=1\dots U$ we approximate the posterior of $\w^{(u)}_{k_u}$ with a Normal distribution 
+\begin{equation}
+\begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
+\def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
+\begin{aligned}
+& q(\w^{(u)}_{k_u})=\mathcal{N}\left(\textbf{w}^{(u)}_{k_u}; \bmu^{(u)}_{k_u}, \bSigma^{(u)}_{k_u} \right), 
+\label{eq:q_u}
+\end{aligned}\endgroup
+\end{equation} 
+\begin{equation}
+\begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
+\def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
+\begin{aligned}
+\bSigma^{(u)}_{k_u} = &\left[\tau_u \I +\sum_{i=1}^N \mathbb{I}\left[u_i=k_u\right]2\lambda_i \cdot \x_i\x_i^\top  \right]^{-1} \\ \nonumber
+\bmu^{(u)}_{k_u}= & \bSigma^{(u)}_{k_u} \cdot\left[\sum_{i=1}^N \mathbb{I}\left[u_i=k_u\right]   \left(r_i-\frac{1}{2} - 2\lambda_i \x_i^\top \langle \textbf{w}^{(a)}_{a_i} \rangle \right) \x_i \right],
+\end{aligned}\endgroup
+\end{equation} 
+where $\mathbb{I}\left[ \cdot \right]$ is an indicator function. 
+The angular brackets are used to denote an expectation over $q(\btheta)$ i.e., $\langle \w^{(a)}_{a_i}\rangle = \mathbb{E}_{q(\btheta)} [ \w^{(a)}_{a_i}  ]$
+\GL{actually, the expectation here is over all $\btheta$ except for $\w^{(u)}_{k_u}$. I'm not so sure this distinction is important though?}
+\todo{It's fine; we can include $\w^{(u)}_{k_u}$ in the expectation, as it's not in the argument of $\mathbb{E}_{q(\btheta)} [ \w^{(a)}_{a_i}  ]$ and will just integrate out to one.}\GL{cool lets leave it as is} \noam{Agree!}
+
+
+\paragraph{Update for artist parameters}
+\noindent For each artist $k_a=1 \dots A$ we approximate the posterior of $\w^{(a)}_{k_a}$ with a Normal distribution
+\begin{equation}
+\begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
+\def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
+\begin{aligned}
+& q(\w^{(a)}_{k_a})=\mathcal{N}\left(\w^{(a)}_{k_a}; \bmu^{(a)}_{k_a}, \bSigma^{(a)}_{k_a} \right), 
+\label{eq:q_a}
+\end{aligned}\endgroup
+\end{equation} 
+\begin{equation}
+\begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
+\def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
+\begin{aligned}
+& \bSigma^{(a)}_{k_a}  =\left[\tau_a \cdot \I+\sum_{i=1}^N \mathbb{I}\left[a_i=k_a\right]2\lambda_i \cdot \x_i\x_i^\top  \right]^{-1}, \\
+& \bmu^{(a)}_{k_a} = \bSigma^{(a)}_{k_a} \cdot \Bigg[ \tau_a \langle \w^{(s)}_{\parent(k_a)}\rangle +\\
+ &\qquad{}\qquad{}\qquad{} \sum_{i=1}^N \mathbb{I}\left[a_i=k_a\right] \left(r_i-\frac{1}{2} - 2\lambda_i \textbf{x}_i^\top \langle\w^{(u)}_{u_i}\rangle \right) \x_i \Bigg]. \nonumber
+\end{aligned}\endgroup
+\end{equation}
+
+\newpage
+\paragraph{Update for sub-genre parameters}
+\noindent For each sub-genre $k_s=1\dots S$ we approximate the posterior of $\w^{(s)}_{k_s}$ with a Normal distribution
+\begin{equation}
+\begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
+\def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
+\begin{aligned}
+q(\w^{(s)}_{k_s})=\mathcal{N}\left(\w^{(s)}_{k_s}; \bmu^{(s)}_{k_s}, \bSigma^{(s)}_{k_s} \right),
+\end{aligned}\endgroup
+\end{equation} 
+\begin{equation}
+\begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
+\def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
+\begin{aligned}
+\bSigma^{(s)}_{k_s} =&\left(\tau_s+|\mathcal{C}_{k_s}|\tau_a\right)^{-1}\cdot  \I , \nonumber \\
+\bmu^{(s)}_{k_s} = &\bSigma^{(s)}_{k_s} \cdot\left[\tau_s \langle \w^{(g)}_{\parent(k_s)}\rangle+\tau_a\sum_{k_a \in \mathcal{C}_{k_s}} \langle \w^{(a)}_{k_a} \rangle \right] ,
+\end{aligned}\endgroup
+\end{equation}
+where $\mathcal{C}_{k_s}=\children(k_s)$ is the set of artists in sub-genre $k_s$.
+
+\paragraph{Update for genre parameters}
+\noindent For each genre $k_g=1\dots G$ we approximate the posterior of $\w^{(g)}_{k_g}$ with a Normal distribution
+\begin{equation}
+\begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
+\def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
+\begin{aligned}
+q(\w^{(g)}_{k_g})=\mathcal{N}\left(\w^{(g)}_{k_g}; \bmu^{(g)}_{k_g}, \bSigma^{(g)}_{k_g} \right),
+\end{aligned}\endgroup
+\end{equation} 
+\begin{equation}
+\begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
+\def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
+\begin{aligned}
+\bSigma^{(g)}_{k_g} = & \left(\tau_g+|\mathcal{C}_{k_g}|\tau_s\right)^{-1} \cdot  \textbf{I}, \nonumber \\
+\bmu^{(g)}_{k_g}=&\bSigma^{(g)}_k \cdot\left[\tau_g \langle \w \rangle  +\tau_s\sum_{k_s\in \mathcal{C}_{k_g}}\langle \w^{(s)}_{k_s}\rangle \right],
+\end{aligned}\endgroup
+\end{equation}
+where $\mathcal{C}_{k_g}=\children(k_g)$ is the set of sub-genres for genre $k_g$.
+
+\paragraph{Update for the root parameters}
+\noindent We approximate the posterior over $\w$ with a Normal distribution  
+\begin{equation}
+\begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
+\def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
+\begin{aligned}
+& q(\w)=\mathcal{N}\left(\w ; \bmu, \bSigma \right), 
+\label{eq:q_w}
+\end{aligned}\endgroup
+\end{equation} 
+\begin{equation}
+\begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
+\def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
+\begin{aligned}
+\bSigma=\left(\tau_w+ \tau_g \cdot G \right)^{-1} \cdot \I \quad \text{and} \quad \bmu=\Sigma\cdot\left[\tau_g\sum_{k_g=1}^{G} \langle \w^{(g)}_{k_g} \rangle \right]. \nonumber
+\end{aligned}\endgroup
+\end{equation}
+
+\paragraph{Update for the precision parameters}
+\noindent The model includes 5 precision parameters: $\tau_u, \tau_a, \tau_s, \tau_g, \tau_w$. Each is approximated with a Gamma distribution. For the sake of brevity we will only provide the update for $\tau_u$. We approximate its posterior with $q(\tau_u)= \mathcal{G}(\tau_u\mid \alpha_u, \beta_u)$, where $\alpha_u=\alpha+\frac{d \cdot U}{2}$ is the shape and $\beta_u=\beta+\frac{1}{2}\sum_{k_u=1}^U\langle \left(\w^{(u)}_{k_u}\right)^{\top} \w^{(u)}_{k_u}\rangle$ is the rate. \GL{This is the one part I did not derive myself. Has anyone verified this?} \noam{I did this very quickly. we can derive it again together. It's no difficult.}\GL{Noam and I verified this expression}
+
+
+\paragraph{Update for variational parameters}
+\noindent The variational parameters $\xi_1\dots \xi_N$ in $\mathcal{F}_{\xi}$ are chosen to maximize $\mathcal{F}_{\xi}$ such that the bound on $\mathcal{F}$ is tight. This is achieved by setting 
+$\xi_i= \sqrt{ \langle  \left(\x_i^\top \left( \w^{(a)}_{a_i}+\w^{(u)}_{u_i} \right) \right)^2 \rangle}$. We refer the reader to Bishop \cite{Bishop} for a deeper discussion.
+
+\subsection{Prediction and Ranking}
+At run time, given a ``seed" artist $a^*$ and a user $u^*$, our model  computes the probability of a positive outcome for each context vector $\x_1 \dots \x_M$ corresponding to $M$ possible tracks. This probability is given by:
+
+\begin{equation}
+\begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
+\def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
+\begin{aligned}
+\hat{r}_m & \defined p(r_m=1 \mid \x_m,\mathcal{D},  \mathcal{H}) \\
+& \approx \int \sigma(h_m)q(\btheta)d \btheta  
+ = \int \sigma(h_m) \mathcal{N} \left(h_m \mid \mu_m, \sigma_m^2 \right) d h_m
+%& \text{where} \qquad h_m=\x_m^\top \left(\w_u^{(u)}+\w_a^{(a)} \right)
+\label{eq:prediction}
+\end{aligned}\endgroup
+\end{equation}
+where the random variable $h_m$ has a Normal distribution: %	 (see \cite{Bishop} 4.5.2):  
+\begin{equation}
+\begingroup\makeatletter\def\f@size{7}\check@mathfonts
+\def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
+\begin{aligned}
+& h_m=\x_m^\top \left(\w_{u^*}^{(u)}+\w_{a^*}^{(a)} \right) \sim \mathcal{N} \left(h_m \mid \mu_m, \sigma_m^2 \right), \\
+& \mu_m \defined \langle \x_m^\top \left(\w_{u^*}^{(u)}+\w_{a^*}^{(a)} \right) \rangle,
+ \quad \sigma_m^2 \defined \langle \left( \x_m^\top \left(\w_{u^*}^{(u)}+\w_{a^*}^{(a)} \right) - \mu_m \right)^2 \rangle. \nonumber
+\end{aligned}\endgroup
+\end{equation}
+Finally, the integral in (\ref{eq:prediction}) is approximated following MacKay \cite{MacKay92} using
+\begin{equation}
+\begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
+\def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
+\begin{aligned}
+\int \sigma(h_m) \mathcal{N} \left(h_m \mid \mu_m, \sigma_m^2 \right) d h_m \approx \sigma \left( \mu_m / \sqrt{1+\pi\sigma_m^2/8}\right).
+\end{aligned}\endgroup
+\label{eq:PredictionApproximation}
+\end{equation}
+
+%\GL{Not sure the below passage is still relevant. I previously added it to adress ulrich's comment of having a way to index the model in the notation. Since then the part applying this has been removed from the section on AuC. WDYT?}
+%In the experiment section below we consider several variants of the approach as comparison baselines. Essentially each of these setups considers a subset $\phi$ of the full parameter set $\btheta$. As such we denote the prediction such a model as $p_\phi(r_m=1 \mid \x_m,\mathcal{D},  \mathcal{H})$. For example, the non-personalized partial two-level (root and genre) hierarchy model only learns the parameter subset $\phi_1=\{ \{ \w_{k_g}^{(g)} \}_{k_g=1}^G, \w, \tau_g, \tau_w \}$. The probability of a positive outcome under this model is indexed by this parameter set and denoted $p_{\phi_1}(r_m=1 \mid \x_m,\mathcal{D},  \mathcal{H})$.

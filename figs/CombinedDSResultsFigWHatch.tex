@@ -1,0 +1,57 @@
+
+
+
+\begin{figure*}
+\centering
+\scalebox{.5}{
+\subfigure[Groove Music]
+{
+\begin{tikzpicture} 
+\begin{axis}[ ybar, enlargelimits=0.15, legend style={font=\large,at={(0.5,-0.15)}, anchor=north,legend columns=-1}, 
+/pgf/number format/precision=3,
+width=400,height=250,
+font=\large,
+ylabel={AUC}, 
+symbolic x coords={Global,Genre,Sub-Genre,Artist}, 
+xtick=data, nodes near coords, nodes near coords align={vertical},
+every node near coord/.append style={xshift=0.3cm}  
+ ]
+ \addplot[pattern=crosshatch,pattern color=blue]
+  %\addplot 
+  coordinates {(Global,0.894) (Genre,0.906) (Sub-Genre,0.907)(Artist,0.908)};
+ \addplot[pattern=north east lines,pattern color=red ] 
+  %\addplot
+   coordinates {(Global,0.543) (Genre,0.557) (Sub-Genre,0.561)(Artist,0.592)} ;
+   \addplot[pattern=north west lines,pattern color=olive ] coordinates {(Artist,0.538)};
+  \legend{Personalized\qquad{}  ,Nonpersonalized\qquad{}  ,Regression  }
+   \end{axis}
+    \end{tikzpicture}
+
+    }
+    \qquad{}\qquad{}\qquad{}    \qquad{}\qquad{}\qquad{}
+    \subfigure[30Music]
+{
+
+\begin{tikzpicture} 
+\begin{axis}[ ybar, enlargelimits=0.15, legend style={font=\large,at={(0.5,-0.15)}, anchor=north,legend columns=-1}, 
+/pgf/number format/precision=3,
+width=400,height=250,
+font=\large,
+ylabel={AUC}, 
+symbolic x coords={Global,Genre,Sub-Genre,Artist}, 
+xtick=data, nodes near coords, nodes near coords align={vertical},
+every node near coord/.append style={xshift=0.3cm}  
+ ]
+ \addplot[pattern=crosshatch,pattern color=blue]
+  coordinates {(Global,0.847712777) (Genre,0.846150903	) (Sub-Genre,0.851292881)(Artist,0.867522546)};
+ \addplot[pattern=north east lines,pattern color=red ] coordinates {(Global,
+ %\addplot coordinates {(Global,
+0.786095642) (Genre,0.788843283) (Sub-Genre,0.794526999)(Artist,0.838879171)};
+\addplot[pattern=north west lines,pattern color=olive ] coordinates {(Artist,0.783697346)};
+  \legend{Personalized\qquad{}  ,Nonpersonalized\qquad{}  ,Regression  }
+   \end{axis}
+    \end{tikzpicture}}   } 
+    \caption{The effects of personalization and hierarchy on accuracy (as measured by AUC) are illustrated for  (a) the Groove Music dataset (a) the 30Music Dataset. We evaluate the personalized and non-personalized approach at each level of the partial hierarchy (increasing depth from left to right). The regression approach is defined only for the full hierarchy (see text). }
+    \label{fig:MainResultsFig}
+\vspace{0.1cm}    
+ \end{figure*}

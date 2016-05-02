@@ -1,0 +1,160 @@
+\ifpdf
+  \DeclareGraphicsRule{*}{mps}{*}{}
+\fi
+
+%\allowdisplaybreaks
+%
+%\setlength{\oddsidemargin}{4mm}
+%\setlength{\evensidemargin}{\oddsidemargin}
+%\setlength{\textwidth}{160mm}
+%\setlength{\topmargin}{-5.4mm}
+%\setlength{\headheight}{5mm}
+%\setlength{\headsep}{5mm}
+%\setlength{\footskip}{10mm}
+%\setlength{\textheight}{230mm}
+%
+%\def\figures{0}
+
+\newcommand{\norm}[1]{\ensuremath{\left\| #1 \right\|}}
+\newcommand{\dataset}{\mathcal{D}}
+
+% A pointer for comments
+\def\pointer{\HandRight $\phantom{0}$}
+
+% Math operators
+\def\argmax{\operatornamewithlimits{arg\,max}}
+\def\argmin{\operatornamewithlimits{arg\,min}}
+\def\const{\mathop{\rm const}}
+\def\cov{\mathop{\rm cov}}
+\def\tr{\mathop{\sf tr}}
+\def\trace{\mathop{\sf trace}}
+\def\var{\mathop{\sf var}}
+
+% Users and items. I think "item" is already a keyword.
+\def\usr{\mathop{\rm user}}
+\def\itm{\mathop{\rm item}}
+
+% Double bold
+\def\Ebb{\mathbb{E}}
+\def\Ibb{\mathbb{I}}
+\def\Rbb{\mathbb{R}}
+\def\Xbb{\mathbb{X}}
+
+% Bold Greek
+\def\balpha{\bm{\alpha}}
+\def\bbeta{\bm{\beta}}
+\def\bmeta{\bm{\eta}}
+\def\bgamma{\bm{\gamma}}
+\def\bGamma{\mathbf{\Gamma}}
+\def\blambda{\bm{\lambda}}
+\def\bLambda{\mathbf{\Lambda}}
+\def\bmu{\bm{\mu}}
+\def\bnu{\bm{\nu}}
+\def\bOmega{\mathbf{\Omega}}
+\def\bpi{\bm{\pi}}
+\def\bPi{\mathbf{\Pi}}
+\def\bSigma{\mathbf{\Sigma}}
+\def\btau{\bm{\tau}}
+\def\btheta{\bm{\theta}}
+\def\bTheta{\mathbf{\Theta}}
+\def\bxi{\bm{\xi}}
+\def\bzeta{\bm{\zeta}}
+
+% Normal bold
+\def\0{\mathbf{0}}
+\def\a{\mathbf{a}}
+\def\b{\mathbf{b}}
+\def\c{\mathbf{c}}
+\def\d{\mathbf{d}}
+\def\e{\mathbf{e}}
+\def\f{\mathbf{f}}
+\def\k{\mathbf{k}}
+\def\m{\mathbf{m}}
+\def\r{\mathbf{r}}
+\def\s{\mathbf{s}}
+\def\u{\mathbf{u}}
+\def\v{\mathbf{v}}
+\def\w{\mathbf{w}}
+\def\x{\mathbf{x}}
+\def\y{\mathbf{y}}
+\def\z{\mathbf{z}}
+\def\A{\mathbf{A}}
+\def\B{\mathbf{B}}
+\def\C{\mathbf{C}}
+\def\D{\mathbf{D}}
+\def\E{\mathbf{E}}
+\def\F{\mathbf{F}}
+\def\G{\mathbf{G}}
+\def\H{\mathbf{H}}
+\def\I{\mathbf{I}}
+\def\J{\mathbf{J}}
+\def\K{\mathbf{K}}
+\def\L{\mathbf{L}}
+\def\P{\mathbf{P}}
+\def\R{\mathbf{R}}
+\def\S{\mathbf{S}}
+\def\U{\mathbf{U}}
+\def\V{\mathbf{V}}
+\def\W{\mathbf{W}}
+\def\X{\mathbf{X}}
+\def\Y{\mathbf{Y}}
+\def\Z{\mathbf{Z}}
+
+\def\parent{\texttt{par}}
+\def\children{\texttt{child}}
+
+
+% Brackets
+\def\<{ \left\langle }
+\def\>{ \right\rangle }
+
+% Caligraphic
+\def\Bcal{\mathcal{B}}
+\def\Dcal{\mathcal{D}}
+\def\Ecal{\mathcal{E}}
+\def\Fcal{\mathcal{F}}
+\def\Gcal{\mathcal{G}}
+\def\Hcal{\mathcal{H}}
+\def\Ical{\mathcal{I}}
+\def\Lcal{\mathcal{L}}
+\def\Mcal{\mathcal{M}}
+\def\Ncal{\mathcal{N}}
+\def\Ocal{\mathcal{O}}
+\def\Rcal{\mathcal{R}}
+\def\Scal{\mathcal{S}}
+\def\Tcal{\mathcal{T}}
+\def\Zcal{\mathcal{Z}}
+
+% General
+\def\erm{\mathrm{e}}
+\def\wo{\backslash}
+\def\defined{\stackrel{\text{\tiny def}}{=}}
+\newcommand{\bigE}[1]{{ \big\langle {#1} \big\rangle }}
+\newcommand{\BigE}[1]{{ \Big\langle {#1} \Big\rangle }}
+\newcommand{\BiggE}[1]{{ \Bigg\langle {#1} \Bigg\rangle }}
+
+\definecolor{Blue}{rgb}{0.0,0.0,1.0}
+\newcommand{\bluetext}[1]{{\color{Blue}{#1}}}
+
+\definecolor{White}{rgb}{1.0,1.0,1.0}
+\newcommand{\whitetext}[1]{{\color{White}{#1}}}
+
+\def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;} 
+
+\pgfplotsset{compat=1.11,
+    /pgfplots/ybar legend/.style={
+    /pgfplots/legend image code/.code={%
+       \draw[##1,/tikz/.cd,yshift=-0.25em,]
+        (0cm,0cm) rectangle (10pt,1.8em);},
+   },
+}
+
+\setlength{\textfloatsep}{5pt plus 1.0pt minus 2.0pt}
+
+\makeatletter
+\renewcommand{\paragraph}{\@startsection{paragraph}{4}{\z@}%
+  {-2.25ex\@plus -1ex \@minus -.2ex}%
+  {0.5ex \@plus .2ex}%
+  {\normalfont\normalsize\bfseries}}
+
+\makeatother

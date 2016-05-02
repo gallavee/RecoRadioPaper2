@@ -1,0 +1,20 @@
+\begin{figure}[H]
+\centering
+
+\begin{tikzpicture} 
+\begin{axis}[ ybar, enlargelimits=0.15, legend style={at={(0.5,-0.15)}, anchor=north,legend columns=-1}, 
+/pgf/number format/precision=3,
+font=\scriptsize,
+ylabel={\#AUC on Test Set}, 
+symbolic x coords={Global,Genere,Sub-Genere,Artist}, 
+xtick=data, nodes near coords, nodes near coords align={vertical},
+every node near coord/.append style={xshift=0.1cm}  
+ ]
+ \addplot coordinates {(Global,0.847712777) (Genere,0.846150903	) (Sub-Genere,0.851292881)(Artist,0.867522546)};
+ \addplot coordinates {(Global,0.786095642) (Genere,0.788843283) (Sub-Genere,0.794526999)(Artist,0.838879171)};
+  \legend{Personalized,Nonpersonalized}
+   \end{axis}
+    \end{tikzpicture}
+    \caption{30 Music Dataset}
+ \end{figure}
+ 

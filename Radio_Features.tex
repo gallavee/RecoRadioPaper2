@@ -1,0 +1,60 @@
+%\GL{'Contextual features' does not mean anything to me I prefer 'Useful Features for Encoding Context'}
+%\GL{In writing this section I believe we should speak to the potential of what is possible with the various sources of information that we have in our possession rather than what we actually used (a subset).THis is similar to our inclusion of the gamma priors over the precision params. This was my approach in rewriting this section.}
+The model as described in the previous section makes no assumptions on the nature of the contextual features beyond the fact that they encode relevant information for choosing the next track to be added to the playlist.  
+Since the main contribution of this paper is in the definition of the model and corresponding learning algorithm, our efforts to find the best features for the application of playlist generation are by no means exhaustive. 
+However, in this section we offer some insights into the types of features used by the algorithm.
+
+
+%Each of the feature groups above is used to compute pairwise similarities comparing a candidate track to be added to the list with the previous tracks already in the playlist as well as with similarities to the seed artist. 
+In general, the features encode different types of similarities or relations  comparing a candidate track to be added to the playlist with tracks already selected as well as with the seed artist. In cases where specific similarities are not applicable we apply zero-imputation.
+We divide the features into four groups categorized according to the type of signal employed in their calculation:
+
+{\bf Acoustic Audio Features (AAF)} -
+%These features are based on acoustic audio signals.
+Audio similarity between two tracks is computed following \cite{ReynoldsQD00}, by extracting Mel-Frequency Cepstral Coefficients (MFCCs) from a track's audio samples and learning a Gaussian Mixture Model (GMM) representation of their distribution . Track similarity is achieved by estimating the Kullback-Leibler divergence between the coefficient distributions of two tracks. To compute similarities at the artist level, a similar approach is applied by fitting GMM models to audio samples of multiple tracks by the same artist. 
+
+{\bf Usage Features (UF)} -
+These features are derived using collaborative filtering techniques on music consumption signals. Similarities are computed following \cite{xbox-www}, by learning a low-rank matrix factorization of the user-track and user-artist implicit usage signals. The output of this process is a vector representation for each track and artist. Similarities are measured using vector space distances.
+
+{\bf Meta-Data Features (MDF)} -
+These features are based on the meta-data tags (e.g. ``easy-listening'', ``upbeat'', ``90's'').
+Similarities are computed by considering each track/artist as a sparse binary vector where each entry represents the existence of a semantic tag. The cosine similarity of these vectors provides the similarity measure applied between the candidate track and previous tracks as well as between a candidate track's artist and the seed.
+
+{\bf Popularity Features (PF)} -
+Popularity is a measure of the prevalence of a track or artist in the dataset.
+First, it is used to compute unary features representing the popularity of a candidate track and its artist. Second, pairwise features are computed relating the popularity of the candidate track and its artist to the popularity of the seed artist and previous tracks. 
+
+%The above features are computed for the various signal sources, different taxonomy level (i.e. artist or track) and different aggregation levels (e.g. averaged over all previous tracks vs only last track) allows for many features. Then, forward feature selection is performed in order to remove redundant features according to the prediction task at hand.
+
+
+
+
+
+%
+%We base our features on three types of resources. The first one is the audio itself. The Audio Based Similarity (ABS) system maps audio tracks to a vector space. Specifically, for each track we extract 12 MFCCs augmented by delta and delta-delta coefficients to form a frame representation feature vector of dimensionality 36. We use a frame size of 2048 with half overlapping frames \SBE{perhaps translate to stride?}. Then, we learn a background distribution from a subset of the entire dataset. To this end, a background GMM with 256 components is trained by applying Expectation Maximization (EM) \cite{ReynoldsQD00}. Given a set of MFCCs features that are extracted from a specific track, we first apply MAP adaptation \cite{ReynoldsQD00}, where the background GMM distribution is taken as a prior. The final representation is determined from the adapted GMM concatenated means. Therefore, the final representation for each audio track is a 9216 dimensional vector. Using ABS we extract artist to artist, $a2a_{ABS}$, and track to track similarity, $t2t_{ABS}$. These features perceive the audio similarity, but they lack semantics such as popularity and origin. The second resource is the usage we collect from the groove client. Using matrix factorization \SBE{Ref RecoMF?} we extract $a2a_{MF}$ and $t2t_{MF}$ similarity based on usage patterns. From the usage we also compute the track popularity $t_{pop}$ and artist popularity $a_{pop}$. In addition, from manually curated meta-data on artist's genres, we compute genre similarity, $a2a_{g}$, between artists by measuring the genre distance between the artists \SBE{Unclear how we compute this, what is genre distance? Is this Jaccard on the label set?}. 
+%
+%With these three feature types we provide features for computing the music similarity of tracks from both aspects, the audio content of the track and the social-usage context. 
+%
+%\begin{table}[h]
+%\begin{center}
+%\begin{tabular}{|c|c|c|c|}
+% \hline
+% \diaghead{\theadfont Diag ColumnmnHead II}%
+%{Features}{Resource type}&
+%\thead{Audio}&\thead{Usage}&\thead{Content}\\
+% \hline
+% Track to track similarity & \checkmark & \checkmark & \\ 
+% \hline
+% Artist to artist similarity & \checkmark & \checkmark & \checkmark\\ 
+% \hline
+% Track popularity & & \checkmark & \\ 
+% \hline
+% Artist popularity & & \checkmark & \\ 
+% \hline
+%\end{tabular}
+%    \caption{This table shows features we compute from each of the three resources.}
+%\end{center}
+%\end{table}
+%
+%To summarize, our feature vector $\x$ is composed of the set of features $\{a2a_{ABS},t2t_{ABS},a2a_{MF},t2t_{MF},a2a_{g},t_{pop},a_{pop}\}$ computed on the context seed artist, current track and candidate track. \SBE{Need to verify that this is the complete feature set and elaborate on relation of features to state}
+%

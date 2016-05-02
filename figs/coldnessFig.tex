@@ -1,0 +1,15 @@
+\begin{figure}
+\scalebox{0.9}{
+\begin{tikzpicture}
+\begin{axis}[ legend style={at={(0.7,0.325)}, anchor=north,legend columns=-1},
+ylabel={AUC},
+xlabel={Cumulative amount of data in training set}]
+\addplot table [x=index, y=artist2, col sep=comma] {coldnessData.csv};
+\addplot table [x=index, y=user, col sep=comma] {coldnessData.csv};
+\legend{Artist,User}
+
+\end{axis}
+\end{tikzpicture}}
+\caption{A cumulative plot illustrating the effect of Artist/User coldness on test AUC. The AUC is plotted for all Artists/Users with at least $x$ labeled data points in the training set.}
+\label{coldnessFig}
+\end{figure}

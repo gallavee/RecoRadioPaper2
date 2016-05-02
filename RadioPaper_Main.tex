@@ -1,0 +1,109 @@
+\documentclass{sig-alternate}
+\input{imports}
+\input{macros}
+
+
+\newcommand{\todo}[1]{\ifnum\comments>0{\color{Blue}{[UP: #1]}}\fi} 
+\newcommand{\SBE}[1]{\ifnum\comments>0{\sethlcolor{green}{\hl{[SBE: #1]}}}\fi} 
+\newcommand{\GL}[1]{\ifnum\comments>0\hl{[GL: #1]}\fi }
+\newcommand{\noam}[1]{\ifnum\comments>0{\color{purple}{[NK: #1]}}\fi} 
+
+
+
+\def\comments{0}
+\def\fsize{9}
+
+
+\title{Groove Radio: A Bayesian Hierarchical Model for Personalized Playlist Generation}
+
+\begin{document}
+
+%\newcounter{exercisecounter}
+%\noindent \Large \textsf{Radio Paper Outline}
+%\normalsize
+%\hfill\textsf{Shay, Hilik, Noam, Oren, Tal and Gal}
+%\hfill\textsf{\today}
+%\noindent\rule{\textwidth}{2pt}
+%\vspace{4pt}
+%\noindent using the bootcamp \LaTeX  template
+
+%\numberofauthors{6}
+%\author{
+%	\alignauthor
+%	Author 1\\
+%	\affaddr{Affiliation}
+%	\alignauthor
+%	Author 2\\
+%	\affaddr{Affiliation}
+%	\alignauthor
+%	Author 3\\
+%	\affaddr{Affiliation}
+%	\and
+%	\alignauthor
+%	Author 4\\
+%	\affaddr{Affiliation}
+%	\alignauthor
+%	Author 5\\
+%	\affaddr{Affiliation}
+%	\alignauthor
+%	\and
+%	Author 6\\
+%	\affaddr{Affiliation}
+%	\alignauthor
+%	Author 7\\
+%	\affaddr{Affiliation}
+%}
+
+\numberofauthors{1}
+\author{
+	\alignauthor
+	Anonymous Authors\\
+	\affaddr{Affiliation}
+	\alignauthor
+}
+
+
+
+\maketitle
+
+%\vspace{-2mm}
+\begin{abstract}
+	\input{Radio_Abstract}
+\end{abstract}
+%\vspace{-2mm}     
+\section{Introduction}
+\label{sec:Introduction}
+   \input{Radio_introduction}
+%\vspace{-2mm}
+\section{Related Work}
+\label{sec:Related}
+    \input{Radio_related}
+%\vspace{-2mm}    
+\section{Modeling Contextual\\ Playlists}
+\label{sec:ourapproach}
+    \input{Radio_OurApproach}
+%\vspace{-2mm}    
+\section{Features for Encoding Context}
+\label{sec:Features}
+	\input{Radio_Features}
+%\vspace{-2mm}	
+\newpage
+\section{Evaluation}
+\label{sec:experiments}
+    \input{Radio_Experiments}
+%\vspace{-2mm}    
+ \section{Practical Considerations}
+ \input{Radio_PracticalConsiderations}
+%\section{Discussion}
+%    \input{Radio_Discussion}
+%\vspace{-2mm}
+\section{Conclusion}
+    \input{Radio_Conclusion}
+\label{sec:conclusion}
+
+%\vspace{-2mm}
+\bibliographystyle{abbrv}
+\bibliography{Radio_Bib}
+
+
+\end{document}
