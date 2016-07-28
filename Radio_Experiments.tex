@@ -92,12 +92,19 @@ Also, clearly visible in both datasets is the importance of the hierarchical tax
 
 %\paragraph{Effect of Features on Accuracy}
 %\input{figs/FeaturesFigure}
-We also considered the contribution of the different feature groups defined in Section~\ref{sec:Features}. To this end we trained the model, using the Groove Music dataset, on each subset of the features separately and evaluated the AUC. Note that for this analysis we used a subset of the data for which no features had missing values.
+
+\input{figs/usagePointHistogram}
+\input{figs/GenreScatter}
+
+We also considered the contribution of the different feature groups defined in Section~\ref{sec:Features}. To this end we trained the model, using the Groove Music dataset, on each subset of the features separately and evaluated the AUC. Note that for this analysis we used a subset of the data for which no features had missing values. 
 %{\bf Usage Features (UF):} These features are derived using collaborative filtering techniques and capture similarity between tracks based on consumption behavior\\
 %{\bf Acoustic Audio Features (AAF):} Features based on acoustic audio signals.\\
 %{\bf Meta-Data Features (MDF):} Features based on the meta-data features (e.g. "easy-listening", "nineties").\\
 %{\bf Popularity Features (PF):} These features simply encode the prevalence of each track in the dataset.\\
-Table~\ref{tab:features_AUC} summarizes the  results of this analysis. Using only usage features results in the highest AUC score, followed by popularity, meta-data and acoustic audio features, respectively. 
+
+Table~\ref{tab:features_AUC} summarizes the  results of this analysis. Using only usage features results in the highest AUC score, followed by popularity, meta-data and acoustic audio features, respectively. Although usage features perform well, on their own, we get additional benefits from using other types of features. This is especially relevant when we consider ``cold" artists that have little usage information available. These artists are by far the majority of those appearing in the catalog as can be seen in the histogram shown in Figure~\ref{artistUsageHistFig}.  Furthermore, the importance of usage features in relation to other features varies across the domain taxonomy. Figure~\ref{GenreScatterFig} illustrates this variance. The figure shows that geners such as \textit{Classical} and \textit{Jazz} rely (relatively) much more on audio features and less on usage features than genres such as \textit{Spoken Word} and \textit{Hip Hop}.
+
+
 \begin{table}[h!]
 \begin{center}
 	\begin{tabular}{|c|c|c|c|c|c|}
@@ -112,6 +119,7 @@ Table~\ref{tab:features_AUC} summarizes the  results of this analysis. Using onl
 \caption{AUC achieved by training only on a subset of features on the Groove Music prediction dataset. Feature groups are defined in Section~\ref{sec:Features}}
 \label{tab:features_AUC}
 \end{table}
+
 
 
 % [NK] - This explanations may belong in the features section but not here.
@@ -149,9 +157,9 @@ Note that proximity in this plot is determined by similarity in the parameters o
 %We present this figure as further evidence that the learned parameters capture inherent semantics in the domain \GL{this final sentence is problematic, how do we see this from the figure?} \noam{Agree.}.
 
 
-
-\subsection{Online A/B Testing}
-We performed an A/B experiment comparing a variant of the model described above with Groove's previous playlist algorithm. The experiment was conducted by randomly assigning users to buckets and measuring online metrics designed to quantify user satisfaction and engagement. Specifically, we consider \textit{Average Session Length} (ASL), and \textit{User Average Skip Ratio} (UASR). ASL is the listening time elapsed in a single radio session, averaged over all such sessions. UASR is a the ratio of skipped tracks to tracks that were played to completion averaged over all users. The approach in this paper was able to outperform the baseline on both metrics showing an increase of $4.21\%$ in ASL and a $5.76\%$ decrease in UASR.  
+\GL{Removed section on AB Testing...}
+%\subsection{Online A/B Testing}
+%We performed an A/B experiment comparing a variant of the model described above with Groove's previous playlist algorithm. The experiment was conducted by randomly assigning users to buckets and measuring online metrics designed to quantify user satisfaction and engagement. Specifically, we consider \textit{Average Session Length} (ASL), and \textit{User Average Skip Ratio} (UASR). ASL is the listening time elapsed in a single radio session, averaged over all such sessions. UASR is a the ratio of skipped tracks to tracks that were played to completion averaged over all users. The approach in this paper was able to outperform the baseline on both metrics showing an increase of $4.21\%$ in ASL and a $5.76\%$ decrease in UASR.  
 
 
 %\begin{table}[h]

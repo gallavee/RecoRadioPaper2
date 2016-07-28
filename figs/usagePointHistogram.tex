@@ -1,0 +1,17 @@
+
+\begin{figure}
+\scalebox{0.9}{
+\begin{tikzpicture}
+\begin{axis}[ 
+only marks,
+ymode=log,xmode=log,
+ylabel={Number of Artists},
+xlabel={Number of Usage Points}]
+\addplot table [x=NumUsagePoints, y=Count, col sep=comma] {histogramOfArtistUsage.csv};
+
+
+\end{axis}
+\end{tikzpicture}}
+\caption{A log-log plot of the histogram of usage points for artists in the groove catalog. The large majority of artists have very few observed usage points.}
+\label{artistUsageHistFig}
+\end{figure}
