@@ -6,11 +6,13 @@
 \newcommand{\todo}[1]{\ifnum\comments>0{\color{Blue}{[UP: #1]}}\fi} 
 \newcommand{\SBE}[1]{\ifnum\comments>0{\sethlcolor{green}{\hl{[SBE: #1]}}}\fi} 
 \newcommand{\GL}[1]{\ifnum\comments>0\hl{[GL: #1]}\fi }
+\newcommand{\GLw}[1]{\ifnum\wsdmcomments>0\hl{[GL: #1]}\fi }
 \newcommand{\noam}[1]{\ifnum\comments>0{\color{purple}{[NK: #1]}}\fi} 
 
 
 
 \def\comments{0}
+\def\wsdmcomments{1}
 \def\fsize{9}
 
 
@@ -88,7 +90,7 @@
 \label{sec:Features}
 	\input{Radio_Features}
 %\vspace{-2mm}	
-\newpage
+%\newpage
 \section{Evaluation}
 \label{sec:experiments}
     \input{Radio_Experiments}

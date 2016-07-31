@@ -13,12 +13,12 @@ as a classification problem, for which the parameters can be
 learned from examples, judiciously labeled through a variety of approaches.
 The  two datasets  used for the evaluations exemplify different approaches to the construction of the training data:
 
-{\bf Groove Music Dataset}
+\noindent{\bf Groove Music Dataset}
 is a proprietary dataset of user preferences that was collected anonymously from Microsoft's Groove music service.
 It contains 334,120 users, 472,908 tracks from 45,239 artists categorized into 100 sub-genres from 17 genres. Positive labels
 are assigned to tracks in a user's listening history that were heard to completion. Negative labels are assigned to tracks that were skipped in mid-play by the user.
 
-{\bf 30Music Dataset}
+\noindent{\bf 30Music Dataset}
 is a publicly available dataset of user playlists \cite{DBLP:conf/recsys/TurrinQCPC15}. Tracks in this dataset were intersected with Groove's catalog in order to enable feature generation (i.e. audio and content features). The resulting dataset contains 14,185 users, 252,424 tracks from 63,314 artists categorized into 99 sub-genres from 17 genres. Positive labels are assigned to tracks appearing in a user's playlist. Since no skip information was available, negatively labeled examples were obtained by uniformly sampling from tracks that did not appear in the user's playlist.
 % \end{enumerate}
 
@@ -60,7 +60,7 @@ We quantify the quality of the model using the \textit{Area Under Curve} (AUC) m
 
 %\subsection{Experimental Procedure}
 
-The model was trained on 80\% of the examples and evaluated on the remaining 20\%. 
+The model was trained on 70\% of the examples and evaluated on the remaining 30\%. \GLw{We may have more results using cross-validation later in the week, so we can claim a stronger experimental setup}
 %In what follows, the full model described in this paper is dubbed as {\bf ``Groove''}.
 We compare it against several baselines:\\
 %For comparison to our fully personalized, four-level (global, genre, sub-genre, artist) semantic hierarchy classification model we considered the following baselines:
@@ -157,7 +157,7 @@ Note that proximity in this plot is determined by similarity in the parameters o
 %We present this figure as further evidence that the learned parameters capture inherent semantics in the domain \GL{this final sentence is problematic, how do we see this from the figure?} \noam{Agree.}.
 
 
-\GL{Removed section on AB Testing...}
+\GLw{Removed section on AB Testing...}
 %\subsection{Online A/B Testing}
 %We performed an A/B experiment comparing a variant of the model described above with Groove's previous playlist algorithm. The experiment was conducted by randomly assigning users to buckets and measuring online metrics designed to quantify user satisfaction and engagement. Specifically, we consider \textit{Average Session Length} (ASL), and \textit{User Average Skip Ratio} (UASR). ASL is the listening time elapsed in a single radio session, averaged over all such sessions. UASR is a the ratio of skipped tracks to tracks that were played to completion averaged over all users. The approach in this paper was able to outperform the baseline on both metrics showing an increase of $4.21\%$ in ASL and a $5.76\%$ decrease in UASR.  
 

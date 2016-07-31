@@ -9,20 +9,23 @@ However, in this section we offer some insights into the types of features used 
 In general, the features encode different types of similarities or relations  comparing a candidate track to be added to the playlist with tracks already selected as well as with the seed artist. In cases where specific similarities are not applicable we apply zero-imputation.
 We divide the features into four groups categorized according to the type of signal employed in their calculation:
 
-{\bf Acoustic Audio Features (AAF)} -
-%These features are based on acoustic audio signals.
-Audio similarity between two tracks is computed following \cite{ReynoldsQD00}, by extracting Mel-Frequency Cepstral Coefficients (MFCCs) from a track's audio samples and learning a Gaussian Mixture Model (GMM) representation of their distribution . Track similarity is achieved by estimating the Kullback-Leibler divergence between the coefficient distributions of two tracks. To compute similarities at the artist level, a similar approach is applied by fitting GMM models to audio samples of multiple tracks by the same artist. 
+\noindent{\bf Acoustic Audio Features (AAF)} -
+Letting $\mathcal{D}_a=\left\{\mathbf{x_i} \in \mathbb{R}^d\right\}_{i=1}^{N_a}$ denote the audio samples (encoded as a vector of continuous features) for a particular artist $a$. Letting $\hat{\theta}_a=\argmax_{\theta} \prod_i p\left(x_i\mid\theta\right)$ denote the maximum likelihood parameter setting for the (Gaussian Mixture Model) GMM  for the distribution of acoustic audio features. The audio similarity between two artists $a_1$ and $a_2$ is then given by $\textsc{KL}\left[ p\left(\mathbf{x}\mid\theta_{a_1}\right) \mid \mid p\left(\mathbf{x}\mid\theta_{a_2}\right)\right
+])$, the Kullback Liebler divergence between the two corresponding distributions. To compute the features $\mathbf{x}_i$, we compute the mel frequency cepstrum coefficients (MFCC). This approach follows~\cite{ReynoldsQD00} and can be applied similarly to compute the similarity between audio tracks.
 
-{\bf Usage Features (UF)} -
-These features are derived using collaborative filtering techniques on music consumption signals. Similarities are computed following \cite{xbox-www}, by learning a low-rank matrix factorization of the user-track and user-artist implicit usage signals. The output of this process is a vector representation for each track and artist. Similarities are measured using vector space distances.
+\noindent{\bf Usage Features (UF)} -
+Following \cite{xbox-www} we learn a low-rank factorization of the matrix $\mathcal{R}$,
+ where $r_{i,j}$ the element on the $i$-th row and $j$-th column denotes the binary rating given to the $j$-th artist in the catalog by the $i$-th user of the system. This formulation is parameterized by a $k$-dimensional vector for each user and artist appearing in the training data. More precisely, the user vectors $\left\{\mathbf{u}_i\right\}_{i=1}^{|U|}$ and artist vectors $\left\{\mathbf{a}_j\right\}_{j=1}^{|A|}$, collectively denoted $\theta_u$ are chosen to optimize the Bayesian model $p(\mathcal{D}_u,\theta_u)$ (Equation (5) in \cite{xbox-www}) over the training dataset containing binary interactions between users and artists, denoted $\mathcal{D}_u$.  The similarity between two artists $a_1$ and $a_2$ is then given by $\sigma \left(\mathbf{a}_{a_1}^\top\mathbf{a}_{a_2}\right)$, where $\sigma$ denotes the sigmoid function. A similar treatment can be applied to a matrix of user-track interaction and used to derive similarities between tracks.
 
-{\bf Meta-Data Features (MDF)} -
-These features are based on the meta-data tags (e.g. ``easy-listening'', ``upbeat'', ``90's'').
-Similarities are computed by considering each track/artist as a sparse binary vector where each entry represents the existence of a semantic tag. The cosine similarity of these vectors provides the similarity measure applied between the candidate track and previous tracks as well as between a candidate track's artist and the seed.
+\noindent{\bf Meta-Data Features (MDF)} -
+Meta-Data features are based on the semantic tags associated with different tracks and artists in the catalog(e.g. ``easy-listening'', ``upbeat'', ``90's''). We obtain this information from a third-party dataset. Each artist $j$ in the catalog is  encoded as a vector $\mathbf{b}_j \in \left\{0,1\right\}^{|V|}$, where $V$ denotes the set of  possible binary semantic tags. These vectors are generally sparse, as each artist corresponds to only a small number of semantic tags.  The similarity between two artists $a_1$ and $a_2$ is then given by the cosine similarity: 
+$$\frac{\mathbf{b}_{a_1}^\top\mathbf{b}_{a_2}}{\parallel\mathbf{b}_{a_1}\parallel\parallel\mathbf{b}_{a_2}\parallel}$$
+Track to track similarity can be computed by using sparse vectors representing tracks.
 
-{\bf Popularity Features (PF)} -
+\noindent{\bf Popularity Features (PF)} -
 Popularity is a measure of the prevalence of a track or artist in the dataset.
-First, it is used to compute unary features representing the popularity of a candidate track and its artist. Second, pairwise features are computed relating the popularity of the candidate track and its artist to the popularity of the seed artist and previous tracks. 
+Popularity is used to compute unary features representing the popularity of a candidate track and its artist. For a particular artist $a_1$ such a feature is computed $\textsc{pop}_{a1}=\frac{\#n_{\mathcal{D}_u}\left(a_1\right)}{|\mathcal{D}_u|}$, where $\#n_{\mathcal{D}_u}\left(a_1\right)$ denotes the number of users who consumed a track by artist $a_1$  in the training corpus $\mathcal{D}_u$. Pairwise popularity features are computed relating the popularity of the candidate track and its artist to the popularity of the seed artist and previous tracks. The relative popularity of artists $a_1$ and $a_2$ can be computed as $\frac{\textsc{pop}_{a2}}{\textsc{pop}_{a1}}$. track to track and track to artist relative popularity can be computed similarly.
+
 
 %The above features are computed for the various signal sources, different taxonomy level (i.e. artist or track) and different aggregation levels (e.g. averaged over all previous tracks vs only last track) allows for many features. Then, forward feature selection is performed in order to remove redundant features according to the prediction task at hand.
 

@@ -24,8 +24,8 @@
 
  \begin{figure}
 \centering
-\begin{tikzpicture}[scale=0.4]
-    \begin{axis}[xlabel={Relative Energy of Usage Features},ylabel={Relative Energy of Audio Features},x=20cm, y=40cm, 
+\begin{tikzpicture}[scale=0.5]
+    \begin{axis}[xlabel={Relative Energy of Usage Features},ylabel={Relative Energy of Acoustic Audio Features},x=19cm, y=40cm, 
    y tick label style={
         /pgf/number format/.cd,
             fixed,
@@ -33,12 +33,14 @@
             precision=2,
         /tikz/.cd
     },    
+label style={font=\Large},    
     ]
         \addplot+[
                 nodes near coords,only marks,
   point meta=explicit symbolic,
-  visualization depends on=\thisrow{z} \as \z,
-  every node near coord/.style={anchor=\z},
+  visualization depends on=\thisrow{xshift} \as \xshift,
+  visualization depends on=  \thisrow{yshift} \as \yshift,
+  every node near coord/.style={yshift=\yshift cm,xshift=\xshift cm,font=\Large},
                   ]
          table[x=x,y=y,meta=label]{g.txt};
     \end{axis}

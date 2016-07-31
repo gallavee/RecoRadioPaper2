@@ -1,0 +1,31 @@
+Features Math..
+
+Audio Features...
+
+Let $\mathcal{D}_a=\left\{\mathbf{x_i} \in \mathbb{R}^d\right\}_{i=1}^{N_a}$ denote the audio samples (encoded as a vector of continuous features) for a particular artist $a$. Letting $\hat{\theta}_a=\argmax_{\theta} \prod_i p\left(x_i\mid\theta\right)$ denote the maximum likelihood parameter setting for the (Gaussian Mixture Model) GMM  for the distribution of acoustic audio features. The audio similarity between two artists $a_1$ and $a_2$ is then given by $\textsc{KL}\left[ p\left(\mathbf{x}\mid\theta_{a_1}\right) \mid \mid p\left(\mathbf{x}\mid\theta_{a_2}\right)\right
+])$, the Kullback Liebler divergence between the two corresponding distributions. To compute the features $\mathbf{x}_i$, we compute the mel frequency cepstrum coefficients (MFCC).
+
+
+Usage Features...
+
+Following \cite{xbox-www} we learn a low-rank factorization of the matrix $\mathcal{R}$,
+ where $r_{i,j}$ the element on the $i$-th row and $j$-th column denotes the binary rating given to the $j$-th artist in the catalog by the $i$-th user of the system. This formulation is parameterized by a $k$-dimensional vector for each user and artist appearing in the training data. More precisely, the user vectors $\left\{\mathbf{u}_i\right\}_{i=1}^{|U|}$ and artist vectors $\left\{\mathbf{a}_j\right\}_{j=1}^{|A|}$, collectively denoted $\theta_u$ are chosen to optimize the Bayesian model $p(\mathcal{D}_u,\theta_u)$ (Equation (5) in \cite{xbox-www}) over the training dataset containing binary interactions between users and artists, denoted $\mathcal{D}_u$.  The similarity between two artists $a_1$ and $a_2$ is then given by $\sigma \left(\mathbf{a}_{a_1}^\top\mathbf{a}_{a_2}\right)$, where $\sigma$ denotes the sigmoid function.
+ 
+Meta-Data Features...
+
+These features are based on the meta-data tags (e.g. ``easy-listening'', ``upbeat'', ``90's'').
+We obtain this information from a third-party data set where each artist $j$ in the catalog is  encoded as a vector $\mathbf{b}_j \in \left\{0,1\right\}^{|V|}$, where $V$ denotes the set of  possible binary semantic tags. These vectors are generally sparse, as each artist corresponds to only a small number of semantic tags.  The similarity between two artists $a_1$ and $a_2$ is then given by the cosine similarity: 
+$$\frac{\mathbf{b}_{a_1}^\top\mathbf{b}_{a_2}}{\parallel\mathbf{b}_{a_1}\parallel\parallel\mathbf{b}_{a_2}\parallel}$$
+
+Popularity Features...
+
+Popularity is a measure of the prevalence of a track or artist in the dataset.
+Popularity is used to compute unary features representing the popularity of a candidate track and its artist. For a particular artist $a_1$ such a feature is computed $\textsc{pop}_{a1}=\frac{\#n_{\mathcal{D}_u}\left(a_1\right)}{|\mathcal{D}_u|}$, where $\#n_{\mathcal{D}_u}\left(a_1\right)$ denotes the number of users who consumed a track by artist $a_1$  in the training corpus $\mathcal{D}_u$. Pairwise popularity features are computed relating the popularity of the candidate track and its artist to the popularity of the seed artist and previous tracks. The relative popularity of artists $a_1$ and $a_2$ can be computed as $\frac{\textsc{pop}_{a2}}{\textsc{pop}_{a1}}$.
+
+
+ 
+ 
+ % we can then exploit the learned representation
+%These features are derived using collaborative filtering techniques on music consumption signals. Similarities are computed following \cite{xbox-www}, by learning a low-rank matrix factorization of the user-track and user-artist implicit usage signals. The output of this process is a vector representation for each track and artist. Similarities are measured using vector space distances.
+
+
