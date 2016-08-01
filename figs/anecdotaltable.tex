@@ -1,0 +1,35 @@
+
+
+
+\begin{figure}
+\centering
+\scalebox{0.5}{
+\pgfplotstabletypeset[
+outfile=pgfplotstable.example1.out.tex,
+columns={{Track Title},{Artist},{Album}},
+col sep=tab,
+string type,
+every head row/.style={
+output empty row,
+		before row={},
+		after row={\\}},
+every row no 0/.style={
+before row={%
+			\textbf{Track Title} & \textbf{Artist Name} & \textbf{Album Name}\\
+			\midrule
+            \multicolumn{3}{c}{\textbf{Artist Seed:Rihanna}} \\
+            \midrule} },
+every row no 5/.style={before row={%
+			\midrule
+            \multicolumn{3}{c}{\textbf{Artist Seed: Wes Montogomery}} \\
+            \midrule} },
+every row no 10/.style={before row={%
+			\midrule
+            \multicolumn{3}{c}{\textbf{Artist Seed: Itzhak Perlman}} \\
+            \midrule} },
+every last row/.style={
+after row=\bottomrule},
+column type={lll}
+]{anecdotal.tsv}}
+\caption{ Anecdotal results: this figure shows the top 5 tracks in the playlist generated for several seed seed artists.} 
+\end{figure}
