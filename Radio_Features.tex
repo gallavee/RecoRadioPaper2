@@ -7,10 +7,11 @@ However, in this section we offer some insights into the types of features used 
 
 %Each of the feature groups above is used to compute pairwise similarities comparing a candidate track to be added to the list with the previous tracks already in the playlist as well as with similarities to the seed artist. 
 In general, the features encode different types of similarities or relations  comparing a candidate track to be added to the playlist with tracks already selected as well as with the seed artist. In cases where specific similarities are not applicable we apply zero-imputation.
-We divide the features into four groups categorized according to the type of signal employed in their calculation:
+\GLw{Added following ulrich's comment:} In our practice the number of features, denoted $d$ below, is on the order of 10-20. We divide these features into four groups categorized according to the type of signal employed in their calculation:
+\GLw{Added more formal description of features}
 
 \noindent{\bf Acoustic Audio Features (AAF)} -
-Letting $\mathcal{D}_a=\left\{\mathbf{x_i} \in \mathbb{R}^d\right\}_{i=1}^{N_a}$ denote the audio samples (encoded as a vector of continuous features) for a particular artist $a$. Letting $\hat{\theta}_a=\argmax_{\theta} \prod_i p\left(x_i\mid\theta\right)$ denote the maximum likelihood parameter setting for the (Gaussian Mixture Model) GMM  for the distribution of acoustic audio features. The audio similarity between two artists $a_1$ and $a_2$ is then given by $\textsc{KL}\left[ p\left(\mathbf{x}\mid\theta_{a_1}\right) \mid \mid p\left(\mathbf{x}\mid\theta_{a_2}\right)\right
+Let $\mathcal{D}_a=\left\{\mathbf{x_i} \in \mathbb{R}^d\right\}_{i=1}^{N_a}$ denote the audio samples (encoded as a vector of continuous features) for a particular artist $a$. Let $\hat{\theta}_a=\argmax_{\theta} \prod_i p\left(x_i\mid\theta\right)$ denote the maximum likelihood parameter setting for the (Gaussian Mixture Model) GMM  for the distribution of acoustic audio features. The audio similarity between two artists $a_1$ and $a_2$ is then given by $\textsc{KL}\left[ p\left(\mathbf{x}\mid\theta_{a_1}\right) \mid \mid p\left(\mathbf{x}\mid\theta_{a_2}\right)\right
 ])$, the Kullback Liebler divergence between the two corresponding distributions. To compute the features $\mathbf{x}_i$, we compute the mel frequency cepstrum coefficients (MFCC). This approach follows~\cite{ReynoldsQD00} and can be applied similarly to compute the similarity between audio tracks.
 
 \noindent{\bf Usage Features (UF)} -
