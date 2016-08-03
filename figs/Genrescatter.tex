@@ -22,9 +22,10 @@
 
 
 
- \begin{figure}
+ \begin{figure}[h]
 \centering
-\begin{tikzpicture}[scale=0.5]
+
+\begin{tikzpicture}[scale=0.35]
     \begin{axis}[xlabel={Relative Energy of Usage Features},ylabel={Relative Energy of Acoustic Audio Features},x=19cm, y=40cm, 
    y tick label style={
         /pgf/number format/.cd,
@@ -46,6 +47,7 @@ label style={font=\Large},
     \end{axis}
 
 \end{tikzpicture}
+\vspace{-0.3cm}
 \caption{ The relative energy of the weights assigned to each Usage and Audio Features for the different musical genres considered.}
  \label{GenreScatterFig}
 \end{figure}

@@ -68,7 +68,7 @@ The likelihood of the dataset $\mathcal{D}$ is simply the product of these proba
 
 %\todo{One question that people might ask is why the model is additive, e.g.~why the $w$-vectors are added. We could say something like, if we concatenated our features $[\x_i, \x_i]$ and weights $[\w^{(a)}_{a_i}, \w^{(u)}_{u_i}]$, so that the interaction are modelled separately between users and features, and another context and features, then this linear model is exactly what we have above, etc.}
 %\SBE{Another insight to Ulrich's comment that we can say is related to the way we train th model, we alternate between parameters, starting from the hierarchy, thereby learning users as a vector difference from artists, this way artists are sort of a prior when there is no information on users. WDYT?} \GL{I'm not sure  this is the right place to discuss these matters, this being the section were we state the model plainly. Perhaps a small passage at the top of section 3}
-
+\newpage
 \subsubsection{Hierarchical Prior}
 The prior distribution over the user parameters is a multivariate Gaussian:
 $p(\w^{(u)}_{u_i} | \tau_u) = \mathcal{N}(\w^{(u)}_{u_i} ; \0, \tau_u^{-1}\I )$, where $\tau_u$ is a precision parameter.
@@ -161,6 +161,7 @@ p\left(\mathcal{D}, \btheta \mid \mathcal{H} \right)& = \prod_{i=1}^N p\left( r_
 The graphical model representing this algorithm is depicted in Figure~\ref{fig:graphical_model}.
 \input{figs/GraphicalModelPlateNotation}
 
+\newpage
 \subsection{Variational Inference}
 We apply variational inference (or variational Bayes) to approximate the posterior distribution,
 $p(\btheta | \mathcal{D}, \mathcal{H} )$,  with some distribution $q(\btheta)$,
@@ -195,6 +196,7 @@ We can apply this bound to the variational free energy:
 \]
 The analytically tractable $\mathcal{F}_{\xi}[ q(\btheta)]$ is used as our optimization objective with respect to our approximate posterior distribution $q(\btheta)$. 
 
+\newpage
 \subsubsection{Update Equations}
 Variational inference is achieved by restricting the approximation distribution $q(\btheta)$ to
 the family of distributions that factor over the parameters in $\btheta$. With a slight notation overloading for $q$ we have  
