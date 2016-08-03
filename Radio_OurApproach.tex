@@ -1,17 +1,17 @@
 %!TEX root = RadioPaper_Main.tex
 \label{sec:OurModel}
-As was previously stated, the algorithm in this paper is designed to generate personalized playlists in the context of a ``seed'' artist and a specific listener. In Groove music, a playlist request named ``radio'' can be called by each subscriber using any artist in the catalog as a seed. An artist seed is a common scenario in many alternative online music services, but the algorithm in this paper can be extended to support also track seeds, genre seeds, seeds based on labels as well as various combinations of multi-seeds. In this paper we limit the discussion to the case of a single artist seed.
+As was previously stated, the algorithm in this paper is designed to generate personalized playlists in the context of a seed artist and a specific user. In Groove music, a playlist request named ``radio'' can be called by each subscriber using any artist in the catalog as a seed. An artist seed is a common scenario in many alternative online music services, but the algorithm in this paper can be extended to support also track seeds, genre seeds, seeds based on labels as well as various combinations of the above, called ``multi-seeds". In this paper we limit the discussion to the case of a single artist seed.
 
 As explained earlier, constructing a playlist depends on multiple similarities used in estimating the relatedness of a new candidate track to the playlist. These similarities are based on meta-data, usage, acoustic features, and popularity patterns. 
 %Another important feature group contains features based on the popularity of a candidate track. \GL{The above sentences closely resemble the intro} 
-However, the importance of each feature may be different for each seed. To account for difference in the importance of features for different seed artists, we propose a model which incorporates per-artist parameters that capture this variance. In the presence of a listener with historical listening data, the quality of the playlist may be further improved with personalization. Hence, the proposed model includes additional parameters that enable encoding per-user preferences. 
+However, the importance of each feature may be different for each seed. To account for difference in the importance of features for different seed artists, we propose a model which incorporates per-artist parameters that capture this variance. In the presence of a user with historical listening data, the quality of the playlist may be further improved with personalization. Hence, the proposed model includes additional parameters that enable encoding per-user preferences. 
 
-A design goal of the proposed model is to support new or unknown listeners and/or seed artists which are new or ``cold" (i.e. sparsely represented in the training data). If there is insufficient information on the listener, the proposed model performs a graceful fall-back, relying only on parameters related to the seed artist. In the case of an unknown or ``cold" artist, the proposed model relies on the hierarchical domain taxonomy to allow a graceful fall-back using the parameters at the sub-genre level. This property applies also to underrepresented sub-genres and even genres, afforded by relying on correspondingly higher levels in the domain taxonomy. 
+A design goal of the proposed model is to support new or unknown users and/or seed artists which are new or ``cold" (i.e. sparsely represented in the training data). If there is insufficient information on the user, the proposed model performs a graceful fall-back, relying only on parameters related to the seed artist. In the case of an unknown or ``cold" artist, the proposed model relies on the hierarchical domain taxonomy to allow a graceful fall-back using the parameters at the sub-genre level. This property applies also to underrepresented sub-genres and even genres, afforded by relying on correspondingly higher levels in the domain taxonomy. 
 
 
 The algorithm constructs a playlist by iteratively picking the next track to be added to the playlist. 
-At each stage, the algorithm considers candidate tracks to be added to the playlist and predicts their relatedness to the seed, previously selected tracks and the listener. 
-Previously selected tracks, together with seed artist and listener information, constitute the ``context'' from which the model is trained to predict the next track to play. This context is encoded as a feature vector, as described in Section~\ref{sec:Features}.  
+At each stage, the algorithm considers candidate tracks to be added to the playlist and predicts their relatedness to the seed, previously selected tracks and the user. 
+Previously selected tracks, together with seed artist and user information, constitute the ``context'' from which the model is trained to predict the next track to play. This context is encoded as a feature vector, as described in Section~\ref{sec:Features}.  
 
 %The information that relates the candidate track to seed, the existing tracks and the user is encoded as a feature vector called 
 
@@ -19,7 +19,7 @@ Previously selected tracks, together with seed artist and listener information, 
 
 \subsection{Playlists as a Classification Problem}
 \label{sec:playlist_is_classification}
-We denote by $\x_i \in \mathbb{R}^d$ the context feature vector representing the proposition of suggesting a particular track $i$ at a particular ``context'' of previous playlist tracks, a seed artist and the listener.\GLw{Added following ulrich's commnet..} Note that the features encoded in $\x_i$  will vary between different candidate tracks even if they belong to the same artist or genre.  These context feature vectors are mapped to a binary label $r_i \in \{0,1\}$,where $r_i=1$ indicates a positive outcome for the proposition and $r_i=0$ indicates a negative outcome. Thus, we have reduced our problem of playlist selection to a classification problem.
+We denote by $\x_i \in \mathbb{R}^d$ the context feature vector representing the proposition of suggesting a particular track $i$ at a particular ``context'' of previous playlist tracks, a seed artist and the user.\GLw{Added following ulrich's commnet..} Note that the features encoded in $\x_i$  will vary between different candidate tracks even if they belong to the same artist or genre.  These context feature vectors are mapped to a binary label $r_i \in \{0,1\}$,where $r_i=1$ indicates a positive outcome for the proposition and $r_i=0$ indicates a negative outcome. Thus, we have reduced our problem of playlist selection to a classification problem.
 
 The dataset is denoted by $\mathcal{D}$ and consists of context vectors paired with labeled outcomes, denoted by the tuples $\left(\x_i,r_i\right) \in \mathcal{D}$.
 The binary labels may encode different real-world outcomes  given the context. 
@@ -36,7 +36,7 @@ We discern vectors and matrices from scalars by denoting the former in {\bf bold
 The  domain taxonomy is represented as a tree-structured graphical model. Each artist in the catalog corresponds to a leaf-node in the tree, with a single parent node corresponding to the artist's sub-genre. Similarly, each node corresponding to a sub-genre has a single parent node representing the appropriate genre. All nodes corresponding to genres  have a single parent, the root node of the tree. We denote by $\parent(n)$ and $\children(n)$ the mappings from a node indexed by $n$ to its parent and to the set of its children, respectively. We denote by $G$, $S$, $A$ and $U$ the total number of genres, sub-genres, artists and users, respectively. 
 
 We denote by $N$ the size of $\mathcal{D}$, our dataset.
-For the $i$'th tuple in $\mathcal{D}$, we denote by $g_i$, $s_i$, $a_i$ and $u_i$ the specific genre, sub-genre, artist and user (listener) corresponding to this datum, respectively.
+For the $i$'th tuple in $\mathcal{D}$, we denote by $g_i$, $s_i$, $a_i$ and $u_i$ the specific genre, sub-genre, artist and user corresponding to this datum, respectively.
 Finally, $\w^{(g)}_{g_i}$, $\w^{(s)}_{s_i}$, $\w^{(a)}_{a_i}$, $\w^{(u)}_{u_i}$,
 $\w \in\mathbb{R}^d$ denote the parameters for genre $g_i$, sub-genre $s_i$, artist $a_i$, user $u_i$, and the root, respectively.
 
@@ -70,9 +70,9 @@ The likelihood of the dataset $\mathcal{D}$ is simply the product of these proba
 %\SBE{Another insight to Ulrich's comment that we can say is related to the way we train th model, we alternate between parameters, starting from the hierarchy, thereby learning users as a vector difference from artists, this way artists are sort of a prior when there is no information on users. WDYT?} \GL{I'm not sure  this is the right place to discuss these matters, this being the section were we state the model plainly. Perhaps a small passage at the top of section 3}
 
 \subsubsection{Hierarchical Prior}
-The prior distribution over the user parameters is a multivariate Normal:
+The prior distribution over the user parameters is a multivariate Gaussian:
 $p(\w^{(u)}_{u_i} | \tau_u) = \mathcal{N}(\w^{(u)}_{u_i} ; \0, \tau_u^{-1}\I )$, where $\tau_u$ is a precision parameter.
-The prior distribution over the root, genre, sub-genre, and artist parameters applies the domain taxonomy to define a hierarchy of priors as follows:
+The prior distribution over the global, genre, sub-genre, and artist parameters applies the domain taxonomy to define a hierarchy of priors as follows:
 %\begin{equation}
 %\begingroup\makeatletter\def\f@size{\fsize}
 %\begin{aligned}
@@ -181,7 +181,7 @@ Introducing an additional variational parameter $\xi_i$ on each observation $i$ 
 \begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
 \def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
 \begin{aligned}
-& \sigma(h_i)^{r_i} \cdot \left[ 1- \sigma(h_i)\right]^{1-r_i} \geq e^{r_ih_i} \left[ \sigma(\xi_i) e^{-\frac{1}{2}(h_i+\xi_i)-\lambda_i(h_i^2+\xi_i^2)}\right] 
+& \sigma(h_i)^{r_i} \cdot \left[ 1- \sigma(h_i)\right]^{1-r_i} \geq  \sigma(\xi_i) e^{r_ih_i-\frac{1}{2}(h_i+\xi_i)-\lambda_i(h_i^2+\xi_i^2)}
 \label{eq:Jordan-Jakkola}
 \end{aligned}\endgroup
 \end{equation} 
@@ -221,7 +221,7 @@ Thus, in the following we describe the update step of each component of $q$ in t
 
 
 \paragraph{Update for user parameters}
-\noindent For each user $k_u=1\dots U$ we approximate the posterior of $\w^{(u)}_{k_u}$ with a Normal distribution 
+\noindent For each user $k_u=1\dots U$ we approximate the posterior of $\w^{(u)}_{k_u}$ with a Gaussian distribution 
 \begin{equation}
 \begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
 \def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
@@ -245,7 +245,7 @@ The angular brackets are used to denote an expectation over $q(\btheta)$ i.e., $
 
 
 \paragraph{Update for artist parameters}
-\noindent For each artist $k_a=1 \dots A$ we approximate the posterior of $\w^{(a)}_{k_a}$ with a Normal distribution
+\noindent For each artist $k_a=1 \dots A$ we approximate the posterior of $\w^{(a)}_{k_a}$ with a Gaussian distribution
 \begin{equation}
 \begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
 \def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
@@ -266,7 +266,7 @@ The angular brackets are used to denote an expectation over $q(\btheta)$ i.e., $
 
 
 \paragraph{Update for sub-genre parameters}
-\noindent For each sub-genre $k_s=1\dots S$ we approximate the posterior of $\w^{(s)}_{k_s}$ with a Normal distribution
+\noindent For each sub-genre $k_s=1\dots S$ we approximate the posterior of $\w^{(s)}_{k_s}$ with a Gaussian distribution
 \begin{equation}
 \begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
 \def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
@@ -285,7 +285,7 @@ q(\w^{(s)}_{k_s})=\mathcal{N}\left(\w^{(s)}_{k_s}; \bmu^{(s)}_{k_s}, \bSigma^{(s
 where $\mathcal{C}_{k_s}=\children(k_s)$ is the set of artists in sub-genre $k_s$.
 
 \paragraph{Update for genre parameters}
-\noindent For each genre $k_g=1\dots G$ we approximate the posterior of $\w^{(g)}_{k_g}$ with a Normal distribution
+\noindent For each genre $k_g=1\dots G$ we approximate the posterior of $\w^{(g)}_{k_g}$ with a Gaussian distribution
 \begin{equation}
 \begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
 \def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
@@ -303,8 +303,8 @@ q(\w^{(g)}_{k_g})=\mathcal{N}\left(\w^{(g)}_{k_g}; \bmu^{(g)}_{k_g}, \bSigma^{(g
 \end{equation}
 where $\mathcal{C}_{k_g}=\children(k_g)$ is the set of sub-genres for genre $k_g$.
 
-\paragraph{Update for the root parameters}
-\noindent We approximate the posterior over $\w$ with a Normal distribution  
+\paragraph{Update for global parameters}
+\noindent We approximate the posterior over $\w$ with a Gaussian distribution  
 \begin{equation}
 \begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
 \def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
@@ -330,7 +330,7 @@ where $\mathcal{C}_{k_g}=\children(k_g)$ is the set of sub-genres for genre $k_g
 $\xi_i= \sqrt{ \langle  \left(\x_i^\top \left( \w^{(a)}_{a_i}+\w^{(u)}_{u_i} \right) \right)^2 \rangle}$. We refer the reader to Bishop \cite{Bishop} for a deeper discussion.
 
 \subsection{Prediction and Ranking}
-At run time, given a ``seed" artist $a^*$ and a user $u^*$, our model  computes the probability of a positive outcome for each context vector $\x_1 \dots \x_M$ corresponding to $M$ possible tracks. This probability is given by:
+At run time, given a seed artist $a^*$ and a user $u^*$, our model  computes the probability of a positive outcome for each context vector $\x_1 \dots \x_M$ corresponding to $M$ possible tracks. This probability is given by:
 
 \begin{equation}
 \begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
@@ -343,7 +343,7 @@ At run time, given a ``seed" artist $a^*$ and a user $u^*$, our model  computes 
 \label{eq:prediction}
 \end{aligned}\endgroup
 \end{equation}
-where the random variable $h_m$ has a Normal distribution: %	 (see \cite{Bishop} 4.5.2):  
+where the random variable $h_m$ has a Gaussian distribution: %	 (see \cite{Bishop} 4.5.2):  
 \begin{equation}
 \begingroup\makeatletter\def\f@size{7}\check@mathfonts
 \def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
