@@ -11,8 +11,8 @@ In general, the features encode different types of similarities or relations  co
 \GLw{Added more formal description of features}
 
 \noindent{\bf Acoustic Audio Features (AAF)} -
-Let $\mathcal{D}_a=\left\{\mathbf{z}_i \in \mathbb{R}^d\right\}_{i=1}^{N_a}$ denote the audio samples (encoded as a vector of continuous features) for a particular artist $a$. To compute the audio features $\mathbf{z}_i$, we compute the mel frequency cepstrum coefficients (MFCC). Let $\hat{\phi}_a=\argmax_{\phi} \prod_i p\left(\mathbf{z}_i\mid\phi\right)$ denote the maximum likelihood parameter setting of the Gaussian Mixture Model~(GMM)  modeling the distribution of acoustic audio features. The audio similarity between two artists $a_1$ and $a_2$ is then given by $$\textsc{KL}\left[ p\left(\mathbf{z_*}\mid\hat{\phi}_{a_1}\right) \quad \middle| \middle| \quad  p\left(\mathbf{z_*} \mid \hat{\phi}_{a_2}\right)\right
-],$$ the Kullback Liebler divergence between the two corresponding distributions.  This approach follows~\cite{ReynoldsQD00} and can be applied similarly to compute the similarity between audio~tracks.
+Let $\mathcal{D}_a=\left\{\mathbf{z}_i \in \mathbb{R}^d\right\}$ denote the audio samples (encoded as a vector of continuous features) for a particular artist $a$. To compute the audio features $\mathbf{z}_i$, we compute the mel frequency cepstrum coefficients (MFCC). Let $\hat{\phi}_a=\argmax_{\phi} \prod_{\mathbf{z}_i\in\mathcal{D}_a} p\left(\mathbf{z}_i\mid\phi\right)$ denote the maximum likelihood parameter setting of the Gaussian Mixture Model~(GMM)  modeling the distribution of acoustic audio features for a particular artist. The audio similarity between two artists $a_1$ and $a_2$ is then given by \begin{equation}\textsc{KL}\left[ p\left(\mathbf{z_*}\mid\hat{\phi}_{a_1}\right) \quad \middle| \middle| \quad  p\left(\mathbf{z_*} \mid \hat{\phi}_{a_2}\right)\right
+],\end{equation} the Kullback Liebler divergence between the two corresponding distributions.  This approach follows~\cite{ReynoldsQD00} and can be applied similarly to compute the similarity between audio~tracks.
 
 \noindent{\bf Usage Features (UF)} -
 Following \cite{xbox-www} we learn a low-rank factorization of the matrix $\mathcal{R}$,
@@ -20,7 +20,8 @@ Following \cite{xbox-www} we learn a low-rank factorization of the matrix $\math
 
 \noindent{\bf Meta-Data Features (MDF)} -
 Meta-Data features are based on the semantic tags associated with different tracks and artists in the catalog~(e.g. ``easy-listening'', ``upbeat'', ``90's''). We obtain this information from a third-party dataset. Each artist $j$ in the catalog is  encoded as a vector $\mathbf{b}_j \in \left\{0,1\right\}^{|V|}$, where $V$ denotes the set of  possible binary semantic tags. These vectors are generally sparse, as each artist corresponds to only a small number of semantic tags.  The similarity between two artists $a_1$ and $a_2$ is then given by the cosine similarity: 
-$$\frac{\mathbf{b}_{a_1}^\top\mathbf{b}_{a_2}}{\parallel\mathbf{b}_{a_1}\parallel\parallel\mathbf{b}_{a_2}\parallel}$$
+\begin{equation}\frac{\mathbf{b}_{a_1}^\top\mathbf{b}_{a_2}}{\parallel\mathbf{b}_{a_1}\parallel\parallel\mathbf{b}_{a_2}\parallel}
+\end{equation}
 Track to track similarity can be computed by using sparse vectors representing tracks.
 
 \noindent{\bf Popularity Features (PF)} -
