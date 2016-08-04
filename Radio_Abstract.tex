@@ -2,7 +2,9 @@ This paper describes an algorithm designed for Microsoft's Groove music service,
 Playlist generation may be informed by a number of information sources including: user specific listening patterns, domain knowledge encoded in a taxonomy, acoustic features of audio tracks, and overall popularity of tracks and artists. The importance assigned to each of these information sources may vary depending on the specific combination of user and seed~artist.
 
 The paper presents a method based on a variational Bayes solution for learning the parameters of a model containing a four-level hierarchy of global preferences, genres, sub-genres and artists. The proposed model further incorporates a personalization component for user-specific preferences.
-Empirical evaluations on both private and public datasets demonstrate the effectiveness of the algorithm and showcase the contribution of each of its components.\GLw{Moved to intro: An online A/B experiment, comparing this algorithm to Groove's previous playlist algorithm, shows an increase in user listening time as well as a reduction in the number of skipped tracks.}
+Empirical evaluations on both private and public datasets demonstrate the effectiveness of the algorithm and showcase the contribution of each of its components.
+
+%\GLw{Moved to intro: An online A/B experiment, comparing this algorithm to Groove's previous playlist algorithm, shows an increase in user listening time as well as a reduction in the number of skipped tracks.}
 
 %The problem of automatic playlist generation is at the core of the intersection between recommender systems and the music domain. 
 %Microsoft's Groove music service offers automatic playlists based on a ``seed'' artist and listener history, serving millions of users world-wide. 

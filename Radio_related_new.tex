@@ -15,29 +15,38 @@
 %Combining these various types of features to achieve improved similarity is also an active area of study\cite{a2mf,Schedl:2015, McFee_multi_similarities,McfeeEtAl_2009_HeteEmbeForSub,Mcfee_learningsimilarity_CF}. Linear combination..
 
 %Automatic playlist generation...
-Automatic Playlist Generation is an active area of research and many formulations, approaches and evaluation frameworks have been proposed across the literature. In \cite{Cunningham:06} the authors provide insight into how human playlists are constructed, suggesting that both audio similarity, domain similarity, and other semantic factors all play a role. Throughout the literature the automatic playlist generation problem has been variously been formalized as:  constraint satisfaction~\cite{Pauws2008647}, the traveling salesman problem~\cite{Knees:2006}, and clustering in a metric space~\cite{Pauws:ISMIR02}. Several other works~\cite{Hariri:2012, Jannach:2015,a2mf} opt for a recommendation oriented approach, ranking the best tracks in the catalog given the user and playlist context (``seed''). This is the approach we adopt in this paper. For a more in-depth discussion of the various approaches in this domain interested readers are referred to a survey of the literature by Bonnin and Jannach~\cite{playlist_survey}.
+Automatic playlist generation is an active research problem to which many formulations, approaches and evaluation frameworks have been proposed. 
+The problem has been variously formalized as:  constraint satisfaction~\cite{Pauws2008647}, the traveling salesman~\cite{Knees:2006}, and clustering in a metric space~\cite{Pauws:ISMIR02}. Other works~\cite{Hariri:2012, Jannach:2015,a2mf} opt for a recommendation oriented approach i.e., identifying the best tracks in the catalog given the user and some context. As we cannot cover all relevant works in the scope of this paper, we refer the reader to the in-depth survey and discussion by Bonnin and Jannach~\cite{playlist_survey}.
 
-%Similarity computations...
-Several works have discussed computing similarity between musical tracks in various ways. Usage features, relating tracks that are consumed by overlapping sets of users are featured prominently in several works~\cite{item2vec,Dror2011,Mcfee_learningsimilarity_CF}. Meta-Data features, relating tracks with similar semantic attributes, are also explored in many works \cite{Bogdanov_content,  McfeeEtAl_2009_HeteEmbeForSubj, Pauws:ISMIR02,SlaneyEtAl_2008_LearAMetrFor}. Acoustic audio features, relating tracks with similar audio signals has also been popular approach \cite{DoplerEtAl_2008_AcceMusiCollVia, Lee2011,a2mf}. The prevalent approach in these works is to 
-consider the mel frequency cepstrum coefficients (MFCC), and/or statistical properties thereof.
-Combining these various types of features to achieve improved similarity is also an active area of study~\cite{Knees:2006, Mcfee_learningsimilarity_CF,McFee_multi_similarities,Schedl:2015}. The methods of combining the features range from straightforward linear combinations~\cite{Knees:2006} to learning a ``similarity space`` embedding~\cite{McFee_multi_similarities}.
-
-
-Hierarchical classification has been previously explored in the literature.   Several authors~\cite{Cai2004,Zhou2011} consider modified support vector machines which account for the the hierarchy of the domain taxonomy. Gopal et al. \cite{NIPS2012_4609} propose a Bayesian hierarchical model multi-class classification model, similar to the one proposed in this work though notably lacking a personalization component, along with variational algorithms for learning the parameters. 
 
 %Applying the domain taxonomy...
-The commercial music domain has a well-established hierarchical domain taxonomy, with  levels (from coarse to fine) genre, sub-genre, and artist. This taxonomy is in use for categorizing music in both brick-and-mortar and online music stores. The domain taxonomy has been used to enhance automated algorithms for genre classification \cite{DecoroEtAl_2007_BayeAggrForHier}, and music recommendations \cite{Dror2011,Mnih2012}.
+The music domain is characterized by hierarchical taxonomy levels of genre, sub-genre, artist, album and track. This taxonomy is in use for categorizing music in both brick-and-mortar and online music stores. The domain taxonomy has been used to enhance automated algorithms for genre classification \cite{DecoroEtAl_2007_BayeAggrForHier}, and music recommendations \cite{Dror2011,Mnih2012}.
 
-
+In this paper, we propose a novel hierarchical graphical model that utilizes this taxonomy to mitigate the cold start problem without restricting the descriptiveness in the popular head.
+%Hierarchical classification has been explored in \cite{Cai2004,Zhou2011} where modified support vector machines were suggested to propagate information through a predefined hierarchy. 
+Gopal et al. \cite{NIPS2012_4609} proposed a Bayesian hierarchical model for multi-class classification, that bares some resemblance to our model though notably lacking personalization and generally not fit for playlist generation. 
 
 %Personalization....
-Gillhofer and Schedl~\cite{Gillhofer2015} empirically illustrate the importance of personalization, that is using information on the user, in selecting appropriate tracks. Personalization via latent space representation of users is a mainstay of classical recommendation systems~\cite{KorenBV09}. Ferwerda and Schedl~\cite{personalized_playlist_schedl} propose modeling additional user features encoding personality and emotional state to enhance music recommendations.
+Gillhofer and Schedl~\cite{Gillhofer2015} empirically illustrate the importance of personalization in selecting appropriate tracks. Personalization via latent space representation of users is a mainstay of classical recommendation systems~\cite{KorenBV09}. Ferwerda and Schedl~\cite{personalized_playlist_schedl} proposed modeling additional user features encoding personality and emotional state to enhance music recommendations.
+
+
+%Similarity computations...
+Many works discuss computing similarity metrics between musical tracks. Collaborative Filtering (CF) or usage features relate tracks consumed by similar users~\cite{item2vec,Dror2011,Mcfee_learningsimilarity_CF}. Meta-Data features, relating tracks with similar semantic attributes, are explored in \cite{Bogdanov_content,  McfeeEtAl_2009_HeteEmbeForSubj, Pauws:ISMIR02,SlaneyEtAl_2008_LearAMetrFor}. Finally, acoustic audio features, relating tracks based on their audio signal, has been discussed in \cite{DoplerEtAl_2008_AcceMusiCollVia, Lee2011,a2mf}. Similar to this paper, the prevalent approach for these acoustic features is based on the mel frequency cepstrum coefficients (MFCC), and/or statistical properties thereof.
+
+A study into how humans curate musical playlists showed that both audio similarity, domain similarity, and other semantic factors all play an important role \cite{Cunningham:06}. 
+Hence, a key design goal for the Groove playlist algorithm has been to find a hybrid approach capable of harnessing different types of features simultaneously.
+This hybrid approach is one of the unique characteristics of the model in this paper. As shown in Section~\ref{sec:experiments}, it is a key requirement for quality playlists.
+
+Hybrid algorithms in the music domain have been described in earlier papers~\cite{Knees:2006, Mcfee_learningsimilarity_CF,McFee_multi_similarities,Schedl:2015}. These methods range from linear combinations~\cite{Knees:2006} to learning hybrid embeddings~\cite{McFee_multi_similarities}.
+The current paper is not the first to suggest a hybrid model in the domain of music, but the playlist generation task and its formulation is inherently different and any comparison extremely difficult.  
+
+
 
 In this work, we propose an approach that uses a Bayesian hierarchy to encode the domain taxonomy.
 Our approach allows a different combination of similarity features at each node in the hierarchy. Further, our approach models personal (i.e. per user) deviations from the hierarchical model.
-To the best of our knowledge, this paper is the first to propose an approach for automatic  playlist generation which includes a hierarchical model that utilizes the domain taxonomy at various resolutions (global, genre, sub-genre and artist), considers multiple similarity types (audio, meta-data,usage), and incorporates personalization.
-
-
+To the best of our knowledge, this paper is the first to propose an approach for automatic  playlist generation which includes a hierarchical model that utilizes the domain taxonomy at various resolutions (global, genre, sub-genre and artist), considers multiple similarity types (audio, meta-data,usage), and incorporates personalization. 
+In Section~\ref{sec:experiments} we investigate and showcase the importance of each of these characteristics in playlist generation.
+Finally, this paper is the first publications to describe a real-world playlist algorithm powering a large scale service with actual users. 
 
 
 

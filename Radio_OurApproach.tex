@@ -1,12 +1,16 @@
 %!TEX root = RadioPaper_Main.tex
 \label{sec:OurModel}
-As was previously stated, the algorithm in this paper is designed to generate personalized playlists in the context of a seed artist and a specific user. In Groove music, a playlist request named ``radio'' can be called by each subscriber using any artist in the catalog as a seed. An artist seed is a common scenario in many alternative online music services, but the algorithm in this paper can be extended to support also track seeds, genre seeds, seeds based on labels as well as various combinations of the above, called ``multi-seeds". In this paper we limit the discussion to the case of a single artist seed.
+The algorithm in this paper is designed to generate personalized playlists in the context of a seed artist and a specific user. In Groove music, a playlist request can be called by each subscriber using any artist in the catalog as a seed. An artist seed is a common scenario in many alternative online music services, but the algorithm in this paper can be extended to support also track seeds, genre seeds, seeds based on labels as well as various combinations of the above (multi-seed). In this paper, we limit the discussion to the case of a single artist seed.
 
-As explained earlier, constructing a playlist depends on multiple similarities used in estimating the relatedness of a new candidate track to the playlist. These similarities are based on meta-data, usage, acoustic features, and popularity patterns. 
+As explained earlier, constructing a playlist depends on multiple similarities used for estimating the relatedness of a new candidate track to the playlist. These similarities are based on meta-data, usage, acoustic features, and popularity patterns. 
 %Another important feature group contains features based on the popularity of a candidate track. \GL{The above sentences closely resemble the intro} 
-However, the importance of each feature may be different for each seed. To account for difference in the importance of features for different seed artists, we propose a model which incorporates per-artist parameters that capture this variance. In the presence of a user with historical listening data, the quality of the playlist may be further improved with personalization. Hence, the proposed model includes additional parameters that enable encoding per-user preferences. 
+However, the importance of each feature may be different for each seed. 
+In the presence of a user with historical listening data, the quality of the playlist may be further improved with personalization. 
+A key contribution of the model in this paper is the ability to learn a different importance weights for each combination of seed artist and listening user. 
+%Hence, we propose a hybrid model with per-artist parameters to capture this variance. 
+%Therefore, the model includes also personalization parameters that enable encoding per-user preferences. 
 
-A design goal of the proposed model is to support new or unknown users and/or seed artists which are new or ``cold" (i.e. sparsely represented in the training data). If there is insufficient information on the user, the proposed model performs a graceful fall-back, relying only on parameters related to the seed artist. In the case of an unknown or ``cold" artist, the proposed model relies on the hierarchical domain taxonomy to allow a graceful fall-back using the parameters at the sub-genre level. This property applies also to underrepresented sub-genres and even genres, afforded by relying on correspondingly higher levels in the domain taxonomy. 
+An additional contribution of the proposed model is the ability to support completely new or ``cold'' (i.e. sparsely represented in the training data) combinations of users and artists. If there is insufficient information on the user, the proposed model performs a graceful fall-back, relying only on parameters related to the seed artist. In the case of an unknown or ``cold" artist, the proposed model relies on the hierarchical domain taxonomy to allow a graceful fall-back using the parameters at the sub-genre level. This property applies also to underrepresented sub-genres and even genres, afforded by relying on correspondingly higher levels in the domain taxonomy. 
 
 
 The algorithm constructs a playlist by iteratively picking the next track to be added to the playlist. 
@@ -19,7 +23,7 @@ Previously selected tracks, together with seed artist and user information, cons
 
 \subsection{Playlists as a Classification Problem}
 \label{sec:playlist_is_classification}
-We denote by $\x_i \in \mathbb{R}^d$ the context feature vector representing the proposition of suggesting a particular track $i$ at a particular ``context'' of previous playlist tracks, a seed artist and the user.\GLw{Added following ulrich's commnet..} Note that the features encoded in $\x_i$  will vary between different candidate tracks even if they belong to the same artist or genre.  These context feature vectors are mapped to a binary label $r_i \in \{0,1\}$,where $r_i=1$ indicates a positive outcome for the proposition and $r_i=0$ indicates a negative outcome. Thus, we have reduced our problem of playlist selection to a classification problem.
+We denote by $\x_i \in \mathbb{R}^d$ the context feature vector representing the proposition of suggesting a particular track $i$ at a particular ``context'' of previous playlist tracks, a seed artist and the user\footnote{The features encoded in $\x_i$  will vary between different candidate tracks even if they belong to the same artist or genre.}.  These context feature vectors are mapped to a binary label $r_i \in \{0,1\}$,where $r_i=1$ indicates a positive outcome for the proposition and $r_i=0$ indicates a negative outcome. Thus, we reduce our problem of playlist selection to a classification problem.
 
 The dataset is denoted by $\mathcal{D}$ and consists of context vectors paired with labeled outcomes, denoted by the tuples $\left(\x_i,r_i\right) \in \mathcal{D}$.
 The binary labels may encode different real-world outcomes  given the context. 
@@ -40,7 +44,7 @@ For the $i$'th tuple in $\mathcal{D}$, we denote by $g_i$, $s_i$, $a_i$ and $u_i
 Finally, $\w^{(g)}_{g_i}$, $\w^{(s)}_{s_i}$, $\w^{(a)}_{a_i}$, $\w^{(u)}_{u_i}$,
 $\w \in\mathbb{R}^d$ denote the parameters for genre $g_i$, sub-genre $s_i$, artist $a_i$, user $u_i$, and the root, respectively.
 
-\subsubsection{Likelihood}
+\subsubsection{The Likelihood}
 We model the probability of a single example $(\x_i, r_i) \in \mathcal{D}$ given the context vector $\x_i$,
 the artist parameters $\w^{(a)}_{a_i}$ and the user parameters $\w^{(u)}_{u_i}$  as:
 %%
@@ -60,8 +64,8 @@ the artist parameters $\w^{(a)}_{a_i}$ and the user parameters $\w^{(u)}_{u_i}$ 
 \label{eq:likelihood}
 \end{align}
 %%
-where  $\sigma(x) \defined (1 + \mathrm{e}^{-x})^{-1}$ denotes the logistic function.
-The likelihood of the dataset $\mathcal{D}$ is simply the product of these probabilities i.e., $\prod_i p( r_i | \x_i , \w^{(a)}_{a_i}, \w^{(u)}_{u_i})$.
+where  $\sigma(x) \defined (1 + \mathrm{e}^{-x})^{-1}$ denotes the logistic function. Note how the likelihood depends on both per-user and per-artist parameters. The user parameters allow for personalization by deviating according a user specific data. %As we show next, ``cold'' artists are modeled using a hierarchy of informative priors based on the domain taxonomy. 
+The likelihood of the entire dataset $\mathcal{D}$ is simply the product of these probabilities i.e., $\prod_i p( r_i | \x_i , \w^{(a)}_{a_i}, \w^{(u)}_{u_i})$.
 
 %, under the assumptions that the labels $r_i$ are i.i.d.
 % [NK]  - The i.i.d assumption is obvious. No need to explicitly mention it. A reviewer might question it which may actually be a problem in our case. Better not mention it...
@@ -69,7 +73,8 @@ The likelihood of the dataset $\mathcal{D}$ is simply the product of these proba
 %\todo{One question that people might ask is why the model is additive, e.g.~why the $w$-vectors are added. We could say something like, if we concatenated our features $[\x_i, \x_i]$ and weights $[\w^{(a)}_{a_i}, \w^{(u)}_{u_i}]$, so that the interaction are modelled separately between users and features, and another context and features, then this linear model is exactly what we have above, etc.}
 %\SBE{Another insight to Ulrich's comment that we can say is related to the way we train th model, we alternate between parameters, starting from the hierarchy, thereby learning users as a vector difference from artists, this way artists are sort of a prior when there is no information on users. WDYT?} \GL{I'm not sure  this is the right place to discuss these matters, this being the section were we state the model plainly. Perhaps a small passage at the top of section 3}
 
-\subsubsection{Hierarchical Prior}
+%\vspace{-5mm}
+\subsubsection{Hierarchical Priors}
 The prior distribution over the user parameters is a multivariate Gaussian:
 $p(\w^{(u)}_{u_i} | \tau_u) = \mathcal{N}(\w^{(u)}_{u_i} ; \0, \tau_u^{-1}\I )$, where $\tau_u$ is a precision parameter.
 The prior distribution over the global, genre, sub-genre, and artist parameters applies the domain taxonomy to define a hierarchy of priors as follows:
@@ -100,7 +105,7 @@ These arguments follow along the hierarchical structure and apply to the sub-gen
 %\todo{We should tie this to different choices of hierarchy, in the experimental results.}
 %\todo{Can we add an ``embedding visualisation'', a bit like in Noam and my Xbox Movies paper? It helps to bring the point home!}\GL{its not clear what we would see in such a visualization, perhaps clustering of sub-genres around their genre? im not too sure what to expect across genres, as we dont have a classification problem here that incentivizes clear separation of the classes}
 
-We define a set of hyper-priors over the precision parameters given by:
+We define hyper-priors over the precision parameters as:
 %\begin{equation}
 %\begingroup\makeatletter\def\f@size{\fsize}\check@mathfonts
 %\def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
@@ -131,6 +136,7 @@ We set $\alpha=\beta=1$, resulting in a Gamma distribution with mean and varianc
 %variance of the inner product is $d$. If we think of a sigmoid function's ``active'' range, this is about as expressive as we
 %might need!}\GL{I dont get ulrich's point about the active rage, but to my view the distinction between this section and the 'practical considerations' is that this section describes stuff we did for the experiments, while the other section describes stuff beyond the experiments for 'production'. So under that logic this fits here (even though we didnt really use hyperpriors)}
 
+%\vspace{-5mm}
 \subsubsection{The Joint Probability}
 We collectively denote all the model's parameters by 
 %%
@@ -172,7 +178,7 @@ $.
 $\mathcal{F}$ serves as a lower bound on the log marginal likelihood, or logarithm of the model evidence. 
 
 \subsubsection{Logistic Bound}
-The joint probability in (\ref{eq:joint-likelihood}) includes Gaussian priors which are not conjugate to the likelihood, due to the sigmoid functions appearing in (\ref{eq:likelihood}).
+The joint probability in (\ref{eq:joint-likelihood}) includes Gaussian priors which are not conjugate to the likelihood due to the sigmoid functions appearing in (\ref{eq:likelihood}).
 In order to facilitate approximate inference, these sigmoid functions are bounded by a ``squared exponential'' form, which is conjugate to the Gaussian prior. 
 The following derivations resemble variational inference for logistic regression as described in more detail in \cite{LogisticBound}.
 
