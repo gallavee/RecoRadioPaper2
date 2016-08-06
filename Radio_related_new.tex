@@ -19,13 +19,6 @@ Automatic playlist generation is an active research problem to which many formul
 The problem has been variously formalized as:  constraint satisfaction~\cite{Pauws2008647}, the traveling salesman~\cite{Knees:2006}, and clustering in a metric space~\cite{Pauws:ISMIR02}. Other works~\cite{Hariri:2012, Jannach:2015,a2mf} opt for a recommendation oriented approach i.e., identifying the best tracks in the catalog given the user and some context. As we cannot cover all relevant works in the scope of this paper, we refer the reader to the in-depth survey and discussion by Bonnin and Jannach~\cite{playlist_survey}.
 
 
-%Applying the domain taxonomy...
-The music domain is characterized by hierarchical taxonomy levels of genre, sub-genre, artist, album and track. This taxonomy is in use for categorizing music in both brick-and-mortar and online music stores. The domain taxonomy has been used to enhance automated algorithms for genre classification \cite{DecoroEtAl_2007_BayeAggrForHier}, and music recommendations \cite{Dror2011,Mnih2012}.
-
-In this paper, we propose a novel hierarchical graphical model that utilizes this taxonomy to mitigate the cold start problem without restricting the descriptiveness in the popular head.
-%Hierarchical classification has been explored in \cite{Cai2004,Zhou2011} where modified support vector machines were suggested to propagate information through a predefined hierarchy. 
-Gopal et al. \cite{NIPS2012_4609} proposed a Bayesian hierarchical model for multi-class classification, that bares some resemblance to our model though notably lacking personalization and generally not fit for playlist generation. 
-
 %Personalization....
 Gillhofer and Schedl~\cite{Gillhofer2015} empirically illustrate the importance of personalization in selecting appropriate tracks. Personalization via latent space representation of users is a mainstay of classical recommendation systems~\cite{KorenBV09}. Ferwerda and Schedl~\cite{personalized_playlist_schedl} proposed modeling additional user features encoding personality and emotional state to enhance music recommendations.
 
@@ -38,14 +31,20 @@ Hence, a key design goal for the Groove playlist algorithm has been to find a hy
 This hybrid approach is one of the unique characteristics of the model in this paper. As shown in Section~\ref{sec:experiments}, it is a key requirement for quality playlists.
 
 Hybrid algorithms in the music domain have been described in earlier papers~\cite{Knees:2006, Mcfee_learningsimilarity_CF,McFee_multi_similarities,Schedl:2015}. These methods range from linear combinations~\cite{Knees:2006} to learning hybrid embeddings~\cite{McFee_multi_similarities}.
-The current paper is not the first to suggest a hybrid model in the domain of music, but the playlist generation task and its formulation is inherently different and any comparison extremely difficult.  
+While the current paper is not the first to suggest a hybrid model in the domain of music, the formulation of the playlist generation task is inherently different from all previous works. 
 
 
+%Applying the domain taxonomy...
+The music domain is characterized by hierarchical taxonomy levels of genre, sub-genre, artist, album and track. This taxonomy is in use for categorizing music in both brick-and-mortar and online music stores. The domain taxonomy has been used to enhance automated algorithms for genre classification \cite{DecoroEtAl_2007_BayeAggrForHier}, and music recommendations \cite{Dror2011,Mnih2012}.
+In this paper, we propose a novel hierarchical graphical model that utilizes this taxonomy to mitigate the cold start problem without restricting the descriptiveness in the popular head.
+%Hierarchical classification has been explored in \cite{Cai2004,Zhou2011} where modified support vector machines were suggested to propagate information through a predefined hierarchy. 
+Gopal et al. \cite{NIPS2012_4609} proposed a Bayesian hierarchical model for multi-class classification, that bares some resemblance to our model though notably lacking personalization and generally not fit for playlist generation. 
 
-In this work, we propose an approach that uses a Bayesian hierarchy to encode the domain taxonomy.
-Our approach allows a different combination of similarity features at each node in the hierarchy. Further, our approach models personal (i.e. per user) deviations from the hierarchical model.
-To the best of our knowledge, this paper is the first to propose an approach for automatic  playlist generation which includes a hierarchical model that utilizes the domain taxonomy at various resolutions (global, genre, sub-genre and artist), considers multiple similarity types (audio, meta-data,usage), and incorporates personalization. 
-In Section~\ref{sec:experiments} we investigate and showcase the importance of each of these characteristics in playlist generation.
+
+The algorithm in this paper is based on a Bayesian hierarchical model to utilize the domain taxonomy.
+Our approach allows a different combination of similarity features at each node in the hierarchy. Further, the model allows for personal (i.e. per user) deviations based on a user's specific historical data.
+To the best of our knowledge, this paper is the first to propose an approach for automatic  playlist generation which includes a hierarchical model that utilizes the domain taxonomy at various resolutions (global, genre, sub-genre and artist), considers multiple similarity types (audio, meta-data, usage), and incorporates personalization. 
+In Section~\ref{sec:experiments} we investigate and showcase the importance of each of these characteristics for playlist generation.
 Finally, this paper is the first publications to describe a real-world playlist algorithm powering a large scale service with actual users. 
 
 
