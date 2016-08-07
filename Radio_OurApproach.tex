@@ -1,16 +1,16 @@
 %!TEX root = RadioPaper_Main.tex
 \label{sec:OurModel}
-The algorithm in this paper is designed to generate personalized playlists in the context of a seed artist and a specific user. In Groove music, a playlist request can be called by each subscriber using any artist in the catalog as a seed. An artist seed is a common scenario in many alternative online music services, but the algorithm in this paper can be extended to support also track seeds, genre seeds, seeds based on labels as well as various combinations of the above (multi-seed). In this paper, we limit the discussion to the case of a single artist seed.
+The algorithm in this paper is designed to generate personalized playlists in the context of a seed artist and a specific user. In Groove music, a playlist request can be called by each subscriber using any artist in the catalog as a seed. An artist seed is a common scenario in many alternative online music services, but the algorithm in this paper can easily be extended to support also track seeds, genre seeds, seeds based on labels as well as various combinations of the above (multi-seed). In this paper, we limit the discussion to the case of a single artist seed.
 
 As explained earlier, constructing a playlist depends on multiple similarities used for estimating the relatedness of a new candidate track to the playlist. These similarities are based on meta-data, usage, acoustic features, and popularity patterns. 
 %Another important feature group contains features based on the popularity of a candidate track. \GL{The above sentences closely resemble the intro} 
 However, the importance of each feature may be different for each seed. 
 In the presence of a user with historical listening data, the quality of the playlist may be further improved with personalization. 
-A key contribution of the model in this paper is the ability to learn a different importance weights for each combination of seed artist and listening user. 
+A key contribution of the model in this paper is the ability to learn different importance weights for each combination of seed artist and listening user. 
 %Hence, we propose a hybrid model with per-artist parameters to capture this variance. 
 %Therefore, the model includes also personalization parameters that enable encoding per-user preferences. 
 
-An additional contribution of the proposed model is the ability to support completely new or ``cold'' (i.e. sparsely represented in the training data) combinations of users and artists. If there is insufficient information on the user, the proposed model performs a graceful fall-back, relying only on parameters related to the seed artist. In the case of an unknown or ``cold" artist, the proposed model relies on the hierarchical domain taxonomy to allow a graceful fall-back using the parameters at the sub-genre level. This property applies also to underrepresented sub-genres and even genres, afforded by relying on correspondingly higher levels in the domain taxonomy. 
+An additional contribution of the proposed model is the ability to support completely new or ``cold'' (i.e. sparsely represented in the training data) combinations of users and artists. If there is insufficient information on the user, the proposed model performs a graceful fall-back, relying only on parameters related to the seed artist. In the case of an unknown or ``cold" artist, the proposed model uses the hierarchical domain taxonomy, relying on the parameters at the sub-genre level. This property applies also to underrepresented sub-genres and even genres, afforded by relying on correspondingly higher levels in the domain taxonomy. 
 
 
 The algorithm constructs a playlist by iteratively picking the next track to be added to the playlist. 
@@ -21,16 +21,16 @@ Previously selected tracks, together with seed artist and user information, cons
 
 %To facilitate learning transitions in the playlist, the choice of the next track to be played is made using knowledge of the tracks that were previously selected. 
 
-\subsection{Playlists as a Classification Problem}
+\subsection{Playlist Generation as a Classification Problem}
 \label{sec:playlist_is_classification}
-We denote by $\x_i \in \mathbb{R}^d$ the context feature vector representing the proposition of suggesting a particular track $i$ at a particular ``context'' of previous playlist tracks, a seed artist and the user\footnote{The features encoded in $\x_i$  will vary between different candidate tracks even if they belong to the same artist or genre.}.  These context feature vectors are mapped to a binary label $r_i \in \{0,1\}$,where $r_i=1$ indicates a positive outcome for the proposition and $r_i=0$ indicates a negative outcome. Thus, we reduce our problem of playlist selection to a classification problem.
+We denote by $\x_i \in \mathbb{R}^d$ the context feature vector representing the proposition of recommending a particular track $i$ at a particular ``context'' of previous playlist tracks, a seed artist and the user\footnote{The features encoded in $\x_i$  will vary between different candidate tracks even if they belong to the same artist or genre.}.  These context feature vectors are mapped to a binary label $r_i \in \{0,1\}$,where $r_i=1$ indicates a positive outcome for the proposition and $r_i=0$ indicates a negative outcome. Thus, we reduce our problem of playlist selection to a classification problem.
 
 The dataset is denoted by $\mathcal{D}$ and consists of context vectors paired with labeled outcomes, denoted by the tuples $\left(\x_i,r_i\right) \in \mathcal{D}$.
 The binary labels may encode different real-world outcomes  given the context. 
 For example, in a dataset collected from playlist data logs, a track  played to its conclusion may be considered a positive outcome ($r_i=1$), whereas a track  skipped  mid-play may be considered a negative outcome ($r_i=0$). Alternatively, consider a dataset of user-compiled collections. Tracks appearing in a collection may be considered positive outcomes, while some sample of catalog tracks not appearing in the collection are considered negative outcomes.  In Section~\ref{sec:experiments} we provide an evaluation using both of these approaches. 
 
 
-\subsection{The Model}
+\subsection{Model Formalization}
 In what follows, we describe a  hierarchical Bayesian classification model enriched with additional personalization parameters. We also provide a learning algorithm that generalizes the dataset $\mathcal{D}$ and enables generation of new playlists.
 
 \subsubsection{Notation}
@@ -45,7 +45,7 @@ Finally, $\w^{(g)}_{g_i}$, $\w^{(s)}_{s_i}$, $\w^{(a)}_{a_i}$, $\w^{(u)}_{u_i}$,
 $\w \in\mathbb{R}^d$ denote the parameters for genre $g_i$, sub-genre $s_i$, artist $a_i$, user $u_i$, and the root, respectively.
 
 \subsubsection{The Likelihood}
-We model the probability of a single example $(\x_i, r_i) \in \mathcal{D}$ given the context vector $\x_i$,
+We model the probability of a single example $(\x_i, r_i) \in \mathcal{D}$ given the context vector $\x_i\in\mathbb{R}^d$,
 the artist parameters $\w^{(a)}_{a_i}$ and the user parameters $\w^{(u)}_{u_i}$  as:
 %%
 %% \GL{Not sure equations being so tiny saves so much space, see comparison below, ive added a parameter \\fsize at the top of the doc and set it to 9(instead of 7), the equations look slightly more readable to me}
@@ -96,11 +96,12 @@ The prior distribution over the global, genre, sub-genre, and artist parameters 
 \end{align}
 %%
 where $\tau_a, \tau_s, \tau_g$, $\tau_w$ are scalar precision parameters.
-This prior structure allows sibling artists (belonging to the same sub-genre) to propagate information through the common sub-genre parameters. 
-In case of a ``cold'' artist, it allows borrowing information from siblings by initializing the artist parameters according to the sub-genre parameters (i.e. ``warm'' initialization). As more information on the artist is observed, its parameters can gradually shift away from the prior position to a more accurate representation based on the observed data.
+This prior structure is the facet of the model that enables dealing with ``cold'' artists using information sharing mentioned in the motivation above.
+%This prior structure allows sibling artists (belonging to the same sub-genre) to propagate information through the common sub-genre parameters.  
+%In case of a ``cold'' artist, it allows borrowing information from siblings by initializing the artist parameters according to the sub-genre parameters (i.e. ``warm'' initialization). As more information on the artist is observed, its parameters can gradually shift away from the prior position to a more accurate representation based on the observed data.
 %to be encoded in relation to their sub-genres, and the sub-genres parameters to be encoded in relation to genres.
 %As an energy function (log joint density), a smaller penalty is paid by encoding two similar artists \emph{once} in their sub-genre;
-These arguments follow along the hierarchical structure and apply to the sub-genre and genre parameters as well.
+%These arguments follow along the hierarchical structure and apply to the sub-genre and genre parameters as well.
 % [NK] - We do not have latent representaitons here. This is not matrix factorizaton. All we got is priors on weight paramters that can borrow information from sibling nodes. Also, it is not true that the aritst is only an "extension" of the prior. The entire vector is encoded.
 %\todo{We should tie this to different choices of hierarchy, in the experimental results.}
 %\todo{Can we add an ``embedding visualisation'', a bit like in Noam and my Xbox Movies paper? It helps to bring the point home!}\GL{its not clear what we would see in such a visualization, perhaps clustering of sub-genres around their genre? im not too sure what to expect across genres, as we dont have a classification problem here that incentivizes clear separation of the classes}

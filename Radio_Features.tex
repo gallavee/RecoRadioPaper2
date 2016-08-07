@@ -14,7 +14,7 @@ We divide the features into four groups categorized according to the type of sig
 
 \noindent{\bf Acoustic Audio Features (AAF)} -
 Our acoustic features capture acoustic similarity between musical artists by learning a Gaussian Mixture Model (GMM) over mel frequency cepstrum coefficients (MFCC) of an artist's audio samples. The approach follows the model of~\cite{ReynoldsQD00} for speaker identification: 
-Let $\mathcal{D}_a=\left\{\mathbf{z}_i \in \mathbb{R}^d\right\}$ denote the mel frequency cepstrum coefficients (MFCC) of audio samples from a particular artist $a$. 
+Let $\mathcal{D}_a=\left\{\mathbf{z}_i \in \mathbb{R}^\ell\right\}$ denote the mel frequency cepstrum coefficients (MFCC) of audio samples from a particular artist $a$. 
 %To compute the audio features $\mathbf{z}_i$, we compute the mel frequency cepstrum coefficients (MFCC). 
 %First, we find a 256 dimensional universal background model (UBM) for all artists. We denote by $\phi$ the UBM parameters. 
 Let $\hat{\phi}_a=\argmax_{\phi} \prod_{\mathbf{z}_i\in\mathcal{D}_a} p\left(\mathbf{z}_i\mid\phi\right)$ denote the maximum likelihood parameter setting of the GMM for a particular artist $a$. The audio similarity between two artists $a_1$ and $a_2$ is then given by \begin{equation}\textsc{KL}\left[ p\left(\mathbf{z_*}\mid\hat{\phi}_{a_1}\right) \quad \middle| \middle| \quad  p\left(\mathbf{z_*} \mid \hat{\phi}_{a_2}\right)\right
