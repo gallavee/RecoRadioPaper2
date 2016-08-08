@@ -8,12 +8,12 @@ However, in this section we offer some insights into the types of features used 
 %Each of the feature groups above is used to compute pairwise similarities comparing a candidate track to be added to the list with the previous tracks already in the playlist as well as with similarities to the seed artist. 
 In general, the features encode different types of similarities or relations  comparing a candidate track and its corresponding artist to be added to the playlist with tracks (and artists) previously selected as well as with the seed artist. In cases where specific similarities are not applicable we apply zero-imputation.
 %In our practice the number of features, denoted $d$ below, is on the order of 10-20, including a fixed feature always set to 1 to generalize the approach to include ``biases". 
-We include also a fixed feature always set to 1 to account for ``biases'' (intercept). 
+We include a fixed feature always set to 1 to account for ``biases'' (intercept). 
 We divide the features into four groups categorized according to the type of signal employed in their calculation:
 
 
 \noindent{\bf Acoustic Audio Features (AAF)} -
-Our acoustic features capture acoustic similarity between musical artists by learning a Gaussian Mixture Model (GMM) over mel frequency cepstrum coefficients (MFCC) of an artist's audio samples. The approach follows the model of~\cite{ReynoldsQD00} for speaker identification: 
+These features capture acoustic similarity between musical artists by learning a Gaussian Mixture Model (GMM) over mel frequency cepstrum coefficients (MFCC) of an artist's audio samples. The approach follows the model of~\cite{ReynoldsQD00} for speaker identification: 
 Let $\mathcal{D}_a=\left\{\mathbf{z}_i \in \mathbb{R}^\ell\right\}$ denote the mel frequency cepstrum coefficients (MFCC) of audio samples from a particular artist $a$. 
 %To compute the audio features $\mathbf{z}_i$, we compute the mel frequency cepstrum coefficients (MFCC). 
 %First, we find a 256 dimensional universal background model (UBM) for all artists. We denote by $\phi$ the UBM parameters. 

@@ -24,7 +24,7 @@ every node near coord/.append style={xshift=0.3cm}
   %\addplot
    coordinates {(Global,0.543) (Genre,0.557) (Sub-Genre,0.561)(Artist,0.592)} ;
    \addplot[pattern=north west lines,pattern color=olive ] coordinates {(Artist,0.538)};
-  \legend{Personalized $(\varphi=1)$\qquad{}  ,Nonpersonalized $(\varphi=0)$\qquad{}  ,Regression  }
+  \legend{Personalized $(\varphi=1)$\qquad{}  ,Nonpersonalized $(\varphi=0)$\qquad{}  ,MAP  }
    \end{axis}
     \end{tikzpicture}
 
@@ -49,7 +49,7 @@ every node near coord/.append style={xshift=0.3cm}
  %\addplot coordinates {(Global,
 0.786095642) (Genre,0.788843283) (Sub-Genre,0.794526999)(Artist,0.838879171)};
 \addplot[pattern=north west lines,pattern color=olive ] coordinates {(Artist,0.783697346)};
-  \legend{Personalized $(\varphi=1)$\qquad{}  ,Nonpersonalized $(\varphi=0)$\qquad{}  ,Regression  }
+  \legend{Personalized $(\varphi=1)$\qquad{}  ,Nonpersonalized $(\varphi=0)$\qquad{}  ,MAP  }
    \end{axis}
     \end{tikzpicture}}   } 
     \caption{The effects of personalization and hierarchy on accuracy (as measured by AUC) are illustrated for  (a) the Groove Music dataset (a) the 30Music Dataset. Our framework can be parameterized to generalize several approaches in the literature (see text). }

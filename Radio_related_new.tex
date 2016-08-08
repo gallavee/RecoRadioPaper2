@@ -15,9 +15,9 @@
 %Combining these various types of features to achieve improved similarity is also an active area of study\cite{a2mf,Schedl:2015, McFee_multi_similarities,McfeeEtAl_2009_HeteEmbeForSub,Mcfee_learningsimilarity_CF}. Linear combination..
 
 %Automatic playlist generation...
-Automatic playlist generation is an active research problem to which many formulations, approaches and evaluation frameworks have been proposed. 
+Automatic playlist generation is an active research problem for which many formulations, approaches and evaluation frameworks have been proposed. 
 The problem has been variously formalized as:  constraint satisfaction~\cite{Pauws2008647}, the traveling salesman~\cite{Knees:2006}, and clustering in a metric space~\cite{Pauws:ISMIR02}. Other works~\cite{Hariri:2012, Jannach:2015,a2mf} opt for a recommendation oriented approach i.e., identifying the best tracks in the catalog given the user and some context.
-To our knowledge, this paper is among the first publications to describe a playlist algorithm powering a large scale commercial music service. For more backgorund on playlist generation, we refer the reader to the in-depth survey and discussion by Bonnin and Jannach~\cite{playlist_survey}.
+To our knowledge, this paper is among the first publications to describe a playlist algorithm powering a large scale commercial music service. For more background on playlist generation, we refer the reader to the in-depth survey and discussion by Bonnin and Jannach~\cite{playlist_survey}.
 
 
 %Personalization....
@@ -36,9 +36,9 @@ Hybrid algorithms, seeking to combine such factors in the music domain have been
 
 %Applying the domain taxonomy...
 The music domain is characterized by hierarchical taxonomy levels of genre, sub-genre, artist, album and track. This taxonomy is in use for categorizing music in both brick-and-mortar and online music stores. The domain taxonomy has been used to enhance automated algorithms for genre classification \cite{DecoroEtAl_2007_BayeAggrForHier}, and music recommendations \cite{Dror2011,Mnih2012}.
-In this paper, we propose a novel hierarchical graphical model that utilizes this taxonomy to mitigate the cold start problem without restricting the descriptiveness in the popular head.
+%In this paper, we propose a novel hierarchical graphical model that utilizes this taxonomy to mitigate the cold start problem without restricting the descriptiveness in the popular head.
 %Hierarchical classification has been explored in \cite{Cai2004,Zhou2011} where modified support vector machines were suggested to propagate information through a predefined hierarchy. 
-Gopal et al. \cite{NIPS2012_4609} proposed a Bayesian hierarchical model for multi-class classification, that bares some resemblance to our model though notably lacking personalization.
+Gopal et al.~\cite{NIPS2012_4609} propose a Bayesian hierarchical model for multi-class classification that bares some resemblance to our model though notably lacking personalization.
 
 
 %The algorithm in this paper is based on a Bayesian hierarchical model to utilize the domain taxonomy.

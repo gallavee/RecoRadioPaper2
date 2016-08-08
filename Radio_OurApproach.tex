@@ -64,7 +64,7 @@ the artist parameters $\w^{(a)}_{a_i}$ and the user parameters $\w^{(u)}_{u_i}$ 
 \label{eq:likelihood}
 \end{align}
 %%
-where  $\sigma(x) \defined (1 + \mathrm{e}^{-x})^{-1}$ denotes the logistic function. Note how the likelihood depends on both per-user and per-artist parameters. The user parameters allow for personalization by deviating according a user specific data. %As we show next, ``cold'' artists are modeled using a hierarchy of informative priors based on the domain taxonomy. 
+where  $\sigma(x) \defined (1 + \mathrm{e}^{-x})^{-1}$ denotes the logistic function. Note how the likelihood depends on both per-user and per-artist parameters. Personalization is afforded by the user parameters which allow deviations according to user specific data. %As we show next, ``cold'' artists are modeled using a hierarchy of informative priors based on the domain taxonomy. 
 The likelihood of the entire dataset $\mathcal{D}$ is simply the product of these probabilities i.e., $\prod_i p( r_i | \x_i , \w^{(a)}_{a_i}, \w^{(u)}_{u_i})$.
 
 %, under the assumptions that the labels $r_i$ are i.i.d.
