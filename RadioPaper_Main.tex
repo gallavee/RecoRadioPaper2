@@ -1,4 +1,3 @@
-
 \documentclass{sig-alternate}
 \input{imports}
 \input{macros}
@@ -57,56 +56,63 @@
 %	\affaddr{Affiliation}
 %}
 
-\numberofauthors{1}
-\author{
-	\alignauthor
-	Anonymous Authors\\
-	\affaddr{Affiliation}
-	\alignauthor
-}
 
+\renewcommand\Authfont{\small}
+\renewcommand\Affilfont{\itshape\footnotesize}
+\author[1]{Oren Barkan}
+\author[1]{Shay Ben-Elazar\footnote{Corresponding authors}}
+\author[1]{Hilik Berezin}
+\author[1]{Noam Koenigstein\footnote{Corresponding authors}}
+\author[1]{Gal Lavee\footnote{Corresponding authors}}
+\author[1,2]{Ulrich Paquet}
+\author[1]{Tal Zaccai}
+\affil[1]{Microsoft R\&D, Israel}
+\affil[2]{Microsoft Research, UK}
 
 
 \maketitle
 
-\vspace{-4mm}
+
+
+
+%\vspace{-4mm}
 \begin{abstract}
 	\input{Radio_Abstract}
 \end{abstract}
-\vspace{-2mm}     
+%\vspace{-2mm}     
 \section{Introduction}
 \label{sec:Introduction}
    \input{Radio_introduction}
-\vspace{-2mm}
+%\vspace{-2mm}
 \section{Related Work}
 \label{sec:Related}
     \input{Radio_related_new}
-\vspace{-2mm}    
+%\vspace{-2mm}    
 %\section{Modeling Contextual\\ Playlists}
 \section{Modeling Contextual Playlists}
 \label{sec:ourapproach}
     \input{Radio_OurApproach}
-\vspace{-2mm}    
+%\vspace{-2mm}    
 \section{Features for Encoding Context}
 \label{sec:Features}
 	\input{Radio_Features}
-\vspace{-2mm}	
+%\vspace{-2mm}	
 %\newpage
 \section{Evaluation}
 \label{sec:experiments}
     \input{Radio_Experiments}
-\vspace{-2mm}   
+%\vspace{-2mm}   
  \section{Practical Considerations}
  \label{sec:practicalConsiderations}
  \input{Radio_PracticalConsiderations}
 %\section{Discussion}
 %    \input{Radio_Discussion}
-\vspace{-2mm}
+%\vspace{-2mm}
 \section{Conclusion}
     \input{Radio_Conclusion}
 \label{sec:conclusion}
 
-\newpage
+%\newpage
 \bibliographystyle{abbrv}
 \bibliography{Radio_Bib}
 
