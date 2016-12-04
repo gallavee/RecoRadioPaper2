@@ -19,56 +19,58 @@
 
 
 \begin{document}
-
-%\newcounter{exercisecounter}
-%\noindent \Large \textsf{Radio Paper Outline}
-%\normalsize
-%\hfill\textsf{Shay, Hilik, Noam, Oren, Tal and Gal}
-%\hfill\textsf{\today}
-%\noindent\rule{\textwidth}{2pt}
-%\vspace{4pt}
-%\noindent using the bootcamp \LaTeX  template
-
-%\numberofauthors{6}
-%\author{
-%	\alignauthor
-%	Author 1\\
-%	\affaddr{Affiliation}
-%	\alignauthor
-%	Author 2\\
-%	\affaddr{Affiliation}
-%	\alignauthor
-%	Author 3\\
-%	\affaddr{Affiliation}
-%	\and
-%	\alignauthor
-%	Author 4\\
-%	\affaddr{Affiliation}
-%	\alignauthor
-%	Author 5\\
-%	\affaddr{Affiliation}
-%	\alignauthor
-%	\and
-%	Author 6\\
-%	\affaddr{Affiliation}
-%	\alignauthor
-%	Author 7\\
-%	\affaddr{Affiliation}
-%}
+	\setcopyright{acmcopyright}
+	%\setcopyright{acmlicensed}
+	%\setcopyright{rightsretained}
+	%\setcopyright{usgov}
+	%\setcopyright{usgovmixed}
+	%\setcopyright{cagov}
+	%\setcopyright{cagovmixed}
+	
+	
+	% DOI
+%	\doi{10.475/123_4}
+	
+	% ISBN
+%	\isbn{123-4567-24-567/08/06}
+	
+	%Conference
+	\conferenceinfo{WSDM '17}{February 7--9, 2017, Cambridge, UK}
+	
+%	\acmPrice{\$15.00}
+%	\numberofauthors{3}
 
 
-\renewcommand\Authfont{\small}
-\renewcommand\Affilfont{\itshape\footnotesize}
-\author[1]{Oren Barkan}
-\author[1]{Shay Ben-Elazar\footnote{Corresponding authors}}
-\author[1]{Hilik Berezin}
-\author[1]{Noam Koenigstein\footnote{Corresponding authors}}
-\author[1]{Gal Lavee\footnote{Corresponding authors}}
-\author[1,2]{Ulrich Paquet}
-\author[1]{Tal Zaccai}
-\affil[1]{Microsoft R\&D, Israel}
-\affil[2]{Microsoft Research, UK}
+\author{
+\newline\begin{tabular}{ccc}
+ Shay Ben-Elazar \footnotemark[2] \thanks{Corresponding Author} & Gal Lavee \footnotemark[2] \footnotemark[1] & Noam Koenigstein \footnotemark[2] \footnotemark[1]\\
+\end{tabular}
+\and
+\begin{tabular}{cccc}
+	Oren Barkan\footnotemark[2] & Hilik Berezin\footnotemark[2] & Ulrich Pacquet \footnotemark[2] \footnotemark[3] & Tal Zaccai\footnotemark[2]\\
+\end{tabular}
+\and
+\begin{tabular}{cc}
+	\affaddr{\footnotemark[2]\hspace{0.5ex} Microsoft Israel} & \affaddr{\footnotemark[3]\hspace{0.5ex} Microsoft Research UK}\\
+\end{tabular}
+\and
+\begin{tabular}{cc}
+	\email{\{shaybe, galla, noamko, orenb, hilikbe, ulripa, talzacc\}@microsoft.com}\\
+\end{tabular}
+}
 
+
+%\renewcommand\Authfont{\small}
+%\renewcommand\Affilfont{\itshape\footnotesize}
+%\author[1]{Oren Barkan}
+%\author[1]{Shay Ben-Elazar\footnote{Corresponding authors}}
+%\author[1]{Hilik Berezin}
+%\author[1]{Noam Koenigstein\footnote{Corresponding authors}}
+%\author[1]{Gal Lavee\footnote{Corresponding authors}}
+%\author[1,2]{Ulrich Paquet}
+%\author[1]{Tal Zaccai}
+%\affil[1]{Microsoft R\&D, Israel}
+%\affil[2]{Microsoft Research, UK}
 
 \maketitle
 
