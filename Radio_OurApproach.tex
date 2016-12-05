@@ -64,7 +64,7 @@ the artist parameters $\w^{(a)}_{a_i}$ and the user parameters $\w^{(u)}_{u_i}$ 
 \label{eq:likelihood}
 \end{align}
 %%
-where  $\sigma(x) \defined (1 + \mathrm{e}^{-x})^{-1}$ denotes the logistic function. Note how the likelihood depends on both per-user and per-artist parameters. Personalization is afforded by the user parameters which allow deviations according to user specific data. %As we show next, ``cold'' artists are modeled using a hierarchy of informative priors based on the domain taxonomy. 
+where  $\sigma(x) \defined (1 + \mathrm{e}^{-x})^{-1}$ denotes the logistic function. Note how the likelihood depends on both per-user and per-artist parameters. Personalization is afforded by the user parameters which allow deviations according to user specific preferences %As we show next, ``cold'' artists are modeled using a hierarchy of informative priors based on the domain taxonomy. 
 The likelihood of the entire dataset $\mathcal{D}$ is simply the product of these probabilities i.e., $\prod_i p( r_i | \x_i , \w^{(a)}_{a_i}, \w^{(u)}_{u_i})$.
 
 %, under the assumptions that the labels $r_i$ are i.i.d.
@@ -155,7 +155,7 @@ The joint probability of the dataset $\mathcal{D}$ and the parameters $\btheta$ 
 \def\maketag@@@#1{\hbox{\m@th\large\normalfont#1}}%
 \begin{aligned}
 p\left(\mathcal{D}, \btheta \mid \mathcal{H} \right)& = \prod_{i=1}^N p\left( r_i \mid \x_i , \w^{(a)}_{a_i}, \w^{(u)}_{u_i} \right) \cdot \prod_{k_u=1}^Up(\w^{(u)}_{k_u} \mid \tau_u ) \\
-& \cdot \prod_{k_a=1}^Ap(\w^{(a)}_{k_a} \mid \tau_a, \w^{(a)}_{\parent(k_a)} ) 
+& \cdot \prod_{k_a=1}^Ap(\w^{(a)}_{k_a} \mid \tau_a, \w^{(s)}_{\parent(k_a)} ) 
 \cdot \prod_{k_s=1}^S p(\w^{(s)}_{k_s} \mid \tau_s, \w^{(g)}_{\parent(k_s)} ) \\
 & \cdot \prod_{k_g=1}^G p(\w^{(g)}_{k_g} \mid \tau_g, \w) \cdot p(\w \mid \tau_w ) \cdot \mathcal{G} \left(\tau_u ; \alpha, \beta \right)  \\
 & \cdot \mathcal{G}\left(\tau_a ; \alpha, \beta \right) 
@@ -165,7 +165,7 @@ p\left(\mathcal{D}, \btheta \mid \mathcal{H} \right)& = \prod_{i=1}^N p\left( r_
 \label{eq:joint-likelihood}
 \end{aligned}\endgroup
 \end{equation} 
-The graphical model representing this algorithm is depicted in Figure~\ref{fig:graphical_model}.
+The graphical model representing this construction is depicted in Figure~\ref{fig:graphical_model}.
 \input{figs/GraphicalModelPlateNotation}
 
 
@@ -330,12 +330,13 @@ where $\mathcal{C}_{k_g}=\children(k_g)$ is the set of sub-genres for genre $k_g
 \end{equation}
 
 \paragraph{Update for the precision parameters}
-\noindent The model includes 5 precision parameters: $\tau_u, \tau_a, \tau_s, \tau_g, \tau_w$. Each is approximated with a Gamma distribution. For the sake of brevity we will only provide the update for $\tau_u$. We approximate its posterior with $q(\tau_u)= \mathcal{G}(\tau_u\mid \alpha_u, \beta_u)$, where $\alpha_u=\alpha+\frac{d \cdot U}{2}$ is the shape and $\beta_u=\beta+\frac{1}{2}\sum_{k_u=1}^U\langle \left(\w^{(u)}_{k_u}\right)^{\top} \w^{(u)}_{k_u}\rangle$ is the rate. \GL{This is the one part I did not derive myself. Has anyone verified this?} \noam{I did this very quickly. we can derive it again together. It's no difficult.}\GL{Noam and I verified this expression}
+\noindent The model includes 5 precision parameters: $\tau_u, \tau_a, \tau_s, \tau_g, \tau_w$. Each is approximated with a Gamma distribution. For the sake of brevity we will only provide the update for $\tau_u$. We approximate its posterior with $q(\tau_u)= \mathcal{G}(\tau_u\mid \alpha_u, \beta_u)$, where $\alpha_u=\alpha+\frac{d \cdot U}{2}$ is the shape and $\beta_u=\beta+\frac{1}{2}\sum_{k_u=1}^U\langle \left(\w^{(u)}_{k_u}\right)^{\top} \w^{(u)}_{k_u}\rangle$ is the rate.
+Recall that $\alpha$ and $\beta$ denote hyper-parameters in our model. \GL{This is the one part I did not derive myself. Has anyone verified this?} \noam{I did this very quickly. we can derive it again together. It's no difficult.}\GL{Noam and I verified this expression}
 
 
 \paragraph{Update for variational parameters}
 \noindent The variational parameters $\xi_1\dots \xi_N$ in $\mathcal{F}_{\xi}$ are chosen to maximize $\mathcal{F}_{\xi}$ such that the bound on $\mathcal{F}$ is tight. This is achieved by setting 
-$\xi_i= \sqrt{ \langle  \left(\x_i^\top \left( \w^{(a)}_{a_i}+\w^{(u)}_{u_i} \right) \right)^2 \rangle}$. We refer the reader to Bishop \cite{Bishop} for a deeper discussion.
+$\xi_i= \sqrt{ \langle  \left(\x_i^\top \left( \w^{(a)}_{a_i}+\w^{(u)}_{u_i} \right) \right)^2 \rangle}$. We refer the reader to Bishop \cite{Bishop} for a more in-depth discussion.
 
 \subsection{Prediction and Ranking}
 At run time, given a seed artist $a^*$ and a user $u^*$, our model  computes the probability of a positive outcome for each context vector $\x_1 \dots \x_M$ corresponding to $M$ possible tracks. This probability is given by:
